@@ -1,12 +1,10 @@
 package com.eomcs.pms;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import com.eomcs.driver.Statement;
 import com.eomcs.pms.handler.BoardAddHandler;
 import com.eomcs.pms.handler.BoardDeleteHandler;
 import com.eomcs.pms.handler.BoardDetailHandler;
@@ -34,6 +32,7 @@ import com.eomcs.util.Prompt;
 public class ClientApp {
 
   // 사용자가 입력한 명령을 저장할 컬렉션 객체 준비
+
   ArrayDeque<String> commandStack = new ArrayDeque<>();
   LinkedList<String> commandQueue = new LinkedList<>();
 
@@ -42,7 +41,7 @@ public class ClientApp {
   int port;
 
   public static void main(String[] args) {
-    ClientApp app = new ClientApp("localhost", 8888);
+    ClientApp app = new ClientApp("192.168.0.67", 8888);
     app.execute();
   }
 
@@ -82,9 +81,8 @@ public class ClientApp {
     commandMap.put("/task/delete", new TaskDeleteHandler());
 
 
-    try (Socket socket = new Socket(this.serverAddress, this.port);
-        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-        DataInputStream in = new DataInputStream(socket.getInputStream()) ) {
+    try (// 서버와 통신하는 것을 대행해 줄 객체를 준비한다.
+        Statement stmt = new Statement(serverAddress, port)) {
 
       while (true) {
 
@@ -107,16 +105,13 @@ public class ClientApp {
               break;
             case "quit":
             case "exit":
+              stmt.executeUpdate("quit");
               // 서버에게 종료한다고 메시지를 보낸다.
-              out.writeUTF("quit");
-              out.writeInt(0);
-              out.flush();
 
               // 서버의 응답을 읽는다.
               // - 서버가 보낸 응답을 읽지 않으면 프로토콜 위반이다.
               // - 서버가 보낸 데이터를 사용하지 않더라도 프로토콜 규칙에 따라 읽어야 한다.
-              in.readUTF();
-              in.readInt();
+
               System.out.println("안녕!");
               return;
             default:
@@ -125,7 +120,7 @@ public class ClientApp {
               if (commandHandler == null) {
                 System.out.println("실행할 수 없는 명령입니다.");
               } else {
-                commandHandler.service(in, out);
+                commandHandler.service(stmt);
                 // 이제 명령어와 그 명령어를 처리하는 핸들러를 추가할 때 마다
                 // case 문을 추가할 필요가 없다.
               }

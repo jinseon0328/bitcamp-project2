@@ -1,13 +1,12 @@
 package com.eomcs.pms.handler;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import com.eomcs.driver.Statement;
 import com.eomcs.pms.domain.Board;
 import com.eomcs.util.Prompt;
 
 public class BoardAddHandler implements Command {
   @Override
-  public void service(DataInputStream in, DataOutputStream out) throws Exception {
+  public void service(Statement stmt) throws Exception {
 
     System.out.println("[게시글 등록]");
 
@@ -16,19 +15,8 @@ public class BoardAddHandler implements Command {
     b.setContent(Prompt.inputString("내용? "));
     b.setWriter(Prompt.inputString("작성자? "));
 
-    out.writeUTF("board/insert");
-    out.writeInt(1);
-    out.writeUTF(String.format("%s,%s,%s", b.getTitle(), b.getContent(), b.getWriter()));
-    out.flush();
-
-    String status = in.readUTF();
-    int length = in.readInt();
-
-    if (status.equals("error")) {
-      System.out.println(in.readUTF());
-      return;
-    }
-
+    stmt.executeUpdate("board/insert", 
+        String.format("%s,%s,%s", b.getTitle(), b.getContent(), b.getWriter()));
     System.out.println("게시글을 등록하였습니다.");
   }
 }

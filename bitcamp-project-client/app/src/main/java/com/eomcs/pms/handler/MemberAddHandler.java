@@ -24,14 +24,13 @@ public class MemberAddHandler implements Command {
     // 서버에 데이터 입력을 요청한다.
     out.writeUTF("member/insert");
     out.writeInt(1);
-    out.writeUTF(String.format("%s,%s,%s,%s,%s,%s,%s", 
-        m.getNo(),
+    out.writeUTF(String.format("%s,%s,%s,%s,%s", 
         m.getName(),
         m.getEmail(),
         m.getPassword(),
         m.getPhoto(),
-        m.getTel(),
-        m.getRegisteredDate()));
+        m.getTel()));
+
     out.flush();
 
     // 서버의 응답을 읽는다.

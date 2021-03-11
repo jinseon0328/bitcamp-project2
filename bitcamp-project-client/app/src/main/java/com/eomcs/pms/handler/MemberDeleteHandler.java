@@ -30,7 +30,7 @@ public class MemberDeleteHandler implements Command {
 
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
     if (!input.equalsIgnoreCase("Y")) {
-      System.out.println("게시글 삭제를 취소하였습니다.");
+      System.out.println("회원 삭제를 취소하였습니다.");
       return;
     }
 
