@@ -1,43 +1,43 @@
 package com.eomcs.pms.handler;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.util.Iterator;
+import com.eomcs.driver.Statement;
 import com.eomcs.util.Prompt;
 public class MemberValidator {
 
-  public static String inputMember(
-      String promptTitle, DataInputStream in, DataOutputStream out) throws Exception{
+  public static void inputMember(Statement stmt) throws Exception{
 
     while (true) {
-      String name = Prompt.inputString(promptTitle);
+      String name = Prompt.inputString(name);
       if (name.length() == 0) {
-        return null;
+        return;
       } 
 
       // 서버에 지정한 번호의 데이터를 요청한다.
-      out.writeUTF("member/selectByName");
-      out.writeInt(1);
-      out.writeUTF(name);
-      out.flush();
+      Iterator<String> results = stmt.executeQuery("member/selectByName");
 
       // 서버의 응답을 받는다.
-      String status = in.readUTF();
-      in.readInt();
-      String data = in.readUTF();
-
-      if (status.equals("success")) {
-        String[] fields = data.split(",");
-        return fields[1];
+      if (!results.hasNext()) {
+        System.out.println("등록된 회원이 아닙니다.");
+        return;
       }
-      System.out.println("등록된 회원이 아닙니다.");
+      while (results.hasNext()) {
+        String[] fields = results.next().split(",");
+
+        System.out.printf("%s, %s, %s, %s, %s\n", 
+            fields[0], 
+            fields[1], 
+            fields[2],
+            fields[3],
+            fields[4]);
+      }
     }
   }
 
-  public static String inputMembers(
-      String promptTitle, DataInputStream in, DataOutputStream out) throws Exception{
+  public static String inputMembers(Statement statement) throws Exception{
     String members = "";
     while (true) {
-      String name = inputMember(promptTitle, in, out);
+      String name = inputMember(statement);
       if (name == null) {
         return members;
       } else {
