@@ -125,9 +125,9 @@ public class MemberTable implements DataTable {
   }
 
   private Member getMember(int memberNo) {
-    for (Member b : list) {
-      if (b.getNo() == memberNo) {
-        return b;
+    for (Member m : list) {
+      if (m.getNo() == memberNo) {
+        return m;
       }
     }
     return null;
@@ -135,7 +135,7 @@ public class MemberTable implements DataTable {
 
   private Member getMemberByName(String name) {
     for (Member m : list) {
-      if (m.getNo() == memberNo) {
+      if (m.getName().equals(name)) {
         return m;
       }
     }

@@ -21,14 +21,14 @@ public class ProjectUpdateHandler implements Command {
     Date startDate = Prompt.inputDate(String.format("시작일(%s)? ", fields[3]));
     Date endDate = Prompt.inputDate(String.format("종료일(%s)? ", fields[4]));
 
-    String owner = MemberValidator.inputMember(String.format("만든이(%s)?(취소: 빈 문자열) ", fields[5]));
+    String owner = MemberValidator.inputMember(String.format("만든이(%s)?(취소: 빈 문자열) ", fields[5]), stmt);
     if (owner == null) {
       System.out.println("프로젝트 변경을 취소합니다.");
       return;
     }
 
     String members = MemberValidator.inputMembers(
-        String.format("팀원(%s)?(완료: 빈 문자열) ", fields[6]), in, out);
+        String.format("팀원(%s)?(완료: 빈 문자열) ", fields[6]), stmt);
 
     String input = Prompt.inputString("정말 변경하시겠습니까?(y/N) ");
     if (!input.equalsIgnoreCase("Y")) {

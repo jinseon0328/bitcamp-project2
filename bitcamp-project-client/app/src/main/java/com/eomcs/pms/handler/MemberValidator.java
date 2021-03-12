@@ -1,43 +1,29 @@
 package com.eomcs.pms.handler;
 
-import java.util.Iterator;
 import com.eomcs.driver.Statement;
 import com.eomcs.util.Prompt;
 public class MemberValidator {
 
-  public static void inputMember(Statement stmt) throws Exception{
+  public static String inputMember(String promptTitle, Statement stmt) throws Exception{
 
     while (true) {
-      String name = Prompt.inputString(name);
+      String name = Prompt.inputString(promptTitle);
       if (name.length() == 0) {
-        return;
+        return null;
       } 
 
-      // 서버에 지정한 번호의 데이터를 요청한다.
-      Iterator<String> results = stmt.executeQuery("member/selectByName");
-
-      // 서버의 응답을 받는다.
-      if (!results.hasNext()) {
+      try {
+        return stmt.executeQuery("member/selectByName", name).next().split(",")[1];
+      } catch (Exception e) {
         System.out.println("등록된 회원이 아닙니다.");
-        return;
-      }
-      while (results.hasNext()) {
-        String[] fields = results.next().split(",");
-
-        System.out.printf("%s, %s, %s, %s, %s\n", 
-            fields[0], 
-            fields[1], 
-            fields[2],
-            fields[3],
-            fields[4]);
       }
     }
   }
 
-  public static String inputMembers(Statement statement) throws Exception{
+  public static String inputMembers(String promptTitle, Statement statement) throws Exception{
     String members = "";
     while (true) {
-      String name = inputMember(statement);
+      String name = inputMember(promptTitle, statement);
       if (name == null) {
         return members;
       } else {
