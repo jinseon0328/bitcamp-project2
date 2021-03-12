@@ -5,8 +5,15 @@ import com.eomcs.pms.domain.Board;
 import com.eomcs.util.Prompt;
 
 public class BoardAddHandler implements Command {
+
+  Statement stmt;
+
+  public BoardAddHandler(Statement stmt) {
+    this.stmt = stmt;
+  }
+
   @Override
-  public void service(Statement stmt) throws Exception {
+  public void service() throws Exception {
 
     System.out.println("[게시글 등록]");
 

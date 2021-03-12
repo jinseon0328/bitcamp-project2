@@ -4,9 +4,13 @@ import java.util.Iterator;
 import com.eomcs.driver.Statement;
 
 public class MemberListHandler implements Command {
+  Statement stmt;
+  public MemberListHandler(Statement stmt) {
+    this.stmt = stmt;
+  }
 
   @Override
-  public void service(Statement stmt) throws Exception {
+  public void service() throws Exception {
     System.out.println("[회원 목록]");
 
     // 서버에 게시글 목록을 달라고 요청한다.

@@ -23,6 +23,7 @@ public class ServerApp {
   int port;
   HashMap<String,DataTable> tableMap = new HashMap<>();
 
+
   public static void main(String[] args) {
     ServerApp app = new ServerApp(8888);
     app.service();
@@ -46,12 +47,73 @@ public class ServerApp {
       System.out.println("서버 실행!");
 
       while (true) {
-        processRequest(serverSocket.accept());
+        Socket socket = serverSocket.accept();
+        new Thread(() -> processRequest(socket)).start();
       }
+
+
 
     } catch (Exception e) {
       System.out.println("서버 실행 중 오류 발생!");
       e.printStackTrace();
+    }
+  }
+
+
+  private DataTable findDataTable(String command) {
+    // 내부적으로 사용할 때는 private
+
+    Set<String> keySet = tableMap.keySet();
+    for (String key : keySet) {
+      if (command.startsWith(key)) {
+        return tableMap.get(key);
+      }
+    }
+    return null;
+  }
+  private void sendResponse(DataOutputStream out, String status, String... data) throws Exception {
+    out.writeUTF(status);
+    out.writeInt(data.length);
+    for (int i = 0; i < data.length; i++) {
+      out.writeUTF(data[i]);
+    }
+    out.flush();
+  }
+
+  private Request receiveRequest(DataInputStream in) throws Exception {
+    Request request = new Request();
+
+    // 1) 명령어 문자열을 읽는다.
+    request.setCommand(in.readUTF());
+
+    // 2) 클라이언트가 보낸 데이터의 개수를 읽는다.
+    int length = in.readInt();
+
+    // 3) 클라이언트가 보낸 데이터를 읽어서 List 컬렉션에 담는다.
+    ArrayList<String> data = null;
+    if (length > 0) {
+      data = new ArrayList<>();
+      for (int i = 0; i < length; i++) {
+        data.add(in.readUTF());
+      }
+      request.setData(data);
+
+    } 
+    return request;
+  }
+
+
+
+  private void log(Request request) {
+    System.out.println("-------------------------------");
+    System.out.printf("명령: %s\n", request.getCommand());
+    List<String> data = request.getData();
+    System.out.printf("데이터 개수: %d\n", data == null ? 0 : data.size());
+    if (data != null) {
+      System.out.println("데이터:");
+      for (String str : data) {
+        System.out.println(str);
+      }
     }
   }
 
@@ -101,61 +163,4 @@ public class ServerApp {
       e.printStackTrace();
     }
   } 
-
-  private DataTable findDataTable(String command) {
-    // 내부적으로 사용할 때는 private
-
-    Set<String> keySet = tableMap.keySet();
-    for (String key : keySet) {
-      if (command.startsWith(key)) {
-        return tableMap.get(key);
-      }
-    }
-    return null;
-  }
-
-  private Request receiveRequest(DataInputStream in) throws Exception {
-    Request request = new Request();
-
-    // 1) 명령어 문자열을 읽는다.
-    request.setCommand(in.readUTF());
-
-    // 2) 클라이언트가 보낸 데이터의 개수를 읽는다.
-    int length = in.readInt();
-
-    // 3) 클라이언트가 보낸 데이터를 읽어서 List 컬렉션에 담는다.
-    ArrayList<String> data = null;
-    if (length > 0) {
-      data = new ArrayList<>();
-      for (int i = 0; i < length; i++) {
-        data.add(in.readUTF());
-      }
-      request.setData(data);
-
-    } 
-    return request;
-  }
-
-
-  private void sendResponse(DataOutputStream out, String status, String... data) throws Exception {
-    out.writeUTF(status);
-    out.writeInt(data.length);
-    for (int i = 0; i < data.length; i++) {
-      out.writeUTF(data[i]);
-    }
-    out.flush();
-  }
-
-  private void log(Request request) {
-    System.out.println("-------------------------------");
-    System.out.printf("명령: %s\n", request.getCommand());
-    List<String> data = request.getData();
-    System.out.printf("데이터 개수: %d\n", data == null ? 0 : data.size());
-    if (data != null) {
-      System.out.println("데이터:");
-      for (String str : data) {
-        System.out.println(str);
-      }
-    }
-  }
 }

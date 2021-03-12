@@ -4,9 +4,12 @@ import java.util.Iterator;
 import com.eomcs.driver.Statement;
 
 public class TaskListHandler implements Command {
-
+  Statement stmt;
+  public  TaskListHandler(Statement stmt) {
+    this.stmt = stmt;
+  }
   @Override
-  public void service(Statement stmt) throws Exception {
+  public void service() throws Exception {
 
     // 서버에 게시글 목록을 달라고 요청한다.
     Iterator<String> results = stmt.executeQuery("task/selectall");
