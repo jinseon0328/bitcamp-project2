@@ -51,14 +51,11 @@ public class ServerApp {
         new Thread(() -> processRequest(socket)).start();
       }
 
-
-
     } catch (Exception e) {
       System.out.println("서버 실행 중 오류 발생!");
       e.printStackTrace();
     }
   }
-
 
   private DataTable findDataTable(String command) {
     // 내부적으로 사용할 때는 private
@@ -101,8 +98,6 @@ public class ServerApp {
     } 
     return request;
   }
-
-
 
   private void log(Request request) {
     System.out.println("-------------------------------");
