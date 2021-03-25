@@ -9,18 +9,17 @@ public class TaskAddHandler implements Command {
   Statement stmt;
   MemberValidator memberValidator;
 
-  public  TaskAddHandler(Statement stmt, MemberValidator memberValidator) {
-
+  public TaskAddHandler(Statement stmt, MemberValidator memberValidator) {
     this.stmt = stmt;
     this.memberValidator = memberValidator;
   }
+
+
   @Override
   public void service() throws Exception {
     System.out.println("[작업 등록]");
 
     Task t = new Task();
-
-    t.setNo(Prompt.inputInt("번호? "));
     t.setContent(Prompt.inputString("내용? "));
     t.setDeadline(Prompt.inputDate("마감일? "));
     t.setStatus(Prompt.inputInt("상태?\n0: 신규\n1: 진행중\n2: 완료\n> "));
@@ -32,11 +31,12 @@ public class TaskAddHandler implements Command {
     }
 
     stmt.executeUpdate("task/insert", 
-        String.format("%d,%s,%s,%s", 
-            t.getNo(), t.getContent(), t.getDeadline(),t.getStatus()));
+        String.format("%s,%s,%s,%s", 
+            t.getContent(),
+            t.getDeadline(),
+            t.getStatus(),
+            t.getOwner()));
 
-    System.out.println("작업을 등록하였습니다.");
-
-
+    System.out.println("작업을 등록했습니다.");
   }
 }

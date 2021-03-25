@@ -2,6 +2,7 @@ package com.eomcs.pms.handler;
 
 import com.eomcs.driver.Statement;
 import com.eomcs.util.Prompt;
+
 public class MemberValidator {
 
   Statement stmt;
@@ -19,7 +20,7 @@ public class MemberValidator {
       } 
 
       try {
-        return stmt.executeQuery("member/selectByName", name).next().split(",")[1];
+        return this.stmt.executeQuery("member/selectByName", name).next().split(",")[1];
       } catch (Exception e) {
         System.out.println("등록된 회원이 아닙니다.");
       }
@@ -42,6 +43,7 @@ public class MemberValidator {
   }
 
 }
+
 
 
 

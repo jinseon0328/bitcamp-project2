@@ -5,22 +5,23 @@ import com.eomcs.driver.Statement;
 import com.eomcs.util.Prompt;
 
 public class ProjectUpdateHandler implements Command {
+
   Statement stmt;
   MemberValidator memberValidator;
+
   public ProjectUpdateHandler(Statement stmt, MemberValidator memberValidator) {
     this.stmt = stmt;
     this.memberValidator = memberValidator;
   }
+
   @Override
   public void service() throws Exception {
     System.out.println("[프로젝트 변경]");
 
     int no = Prompt.inputInt("번호? ");
 
-    // 서버에 지정한 번호의 게시글을 요청한다.
     String[] fields = stmt.executeQuery("project/select", Integer.toString(no)).next().split(",");
 
-    // 서버의 응답을 받는다.
     String title = Prompt.inputString(String.format("프로젝트명(%s)? ", fields[1]));
     String content = Prompt.inputString(String.format("내용(%s)? ", fields[2]));
     Date startDate = Prompt.inputDate(String.format("시작일(%s)? ", fields[3]));
@@ -41,14 +42,13 @@ public class ProjectUpdateHandler implements Command {
       return;
     }
 
-    // 서버에 데이터 변경을 요청한다.
-    stmt.executeUpdate("project/update", String.format(String.format("%s,%s,%s,%s", 
-        no, title, startDate, endDate)));
+    stmt.executeUpdate("project/update", 
+        String.format("%d,%s,%s,%s,%s,%s,%s", 
+            no, title, content, startDate, endDate, owner, members));
 
-    // 서버의 응답을 받는다.
-
-    System.out.println("프로젝트를 변경하였습니다.");
+    System.out.println("프로젝트을 변경하였습니다.");
   }
+
 }
 
 

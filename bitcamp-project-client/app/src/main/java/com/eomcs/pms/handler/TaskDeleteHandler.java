@@ -4,10 +4,13 @@ import com.eomcs.driver.Statement;
 import com.eomcs.util.Prompt;
 
 public class TaskDeleteHandler implements Command {
+
   Statement stmt;
-  public  TaskDeleteHandler(Statement stmt) {
+
+  public TaskDeleteHandler(Statement stmt) {
     this.stmt = stmt;
   }
+
   @Override
   public void service() throws Exception {
     System.out.println("[작업 삭제]");
@@ -16,7 +19,6 @@ public class TaskDeleteHandler implements Command {
 
     stmt.executeQuery("task/select", Integer.toString(no));
 
-
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
     if (!input.equalsIgnoreCase("Y")) {
       System.out.println("작업 삭제를 취소하였습니다.");
@@ -24,11 +26,7 @@ public class TaskDeleteHandler implements Command {
     }
 
     stmt.executeUpdate("task/delete", Integer.toString(no));
-    // 서버에 데이터 삭제를 요청한다.
-
 
     System.out.println("작업을 삭제하였습니다.");
-
-
   }
 }

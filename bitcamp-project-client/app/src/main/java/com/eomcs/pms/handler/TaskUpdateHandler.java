@@ -6,16 +6,19 @@ import com.eomcs.pms.domain.Task;
 import com.eomcs.util.Prompt;
 
 public class TaskUpdateHandler implements Command {
+
   Statement stmt;
   MemberValidator memberValidator;
+
   public TaskUpdateHandler(Statement stmt, MemberValidator memberValidator) {
     this.stmt = stmt;
     this.memberValidator = memberValidator;
   }
+
+
   @Override
   public void service() throws Exception {
     System.out.println("[작업 변경]");
-
 
     int no = Prompt.inputInt("번호? ");
 
@@ -39,10 +42,9 @@ public class TaskUpdateHandler implements Command {
     }
 
     stmt.executeUpdate("task/update", 
-        String.format(String.format("%s,%s,%s,%s", content, deadline, stat, owner)));
+        String.format("%s,%s,%s,%s,%s", no, content, deadline, stat, owner));
 
     System.out.println("작업을 변경하였습니다.");
   }
+
 }
-
-

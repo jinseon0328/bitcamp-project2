@@ -4,10 +4,13 @@ import com.eomcs.driver.Statement;
 import com.eomcs.util.Prompt;
 
 public class ProjectDeleteHandler implements Command {
+
   Statement stmt;
+
   public ProjectDeleteHandler(Statement stmt) {
     this.stmt = stmt;
   }
+
   @Override
   public void service() throws Exception {
     System.out.println("[프로젝트 삭제]");
@@ -25,7 +28,6 @@ public class ProjectDeleteHandler implements Command {
     stmt.executeUpdate("project/delete", Integer.toString(no));
 
     System.out.println("프로젝트를 삭제하였습니다.");
-
   }
 }
 
