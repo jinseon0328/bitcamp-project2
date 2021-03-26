@@ -33,12 +33,12 @@ public class TaskAddHandler implements Command {
     try (Connection con = DriverManager.getConnection( //
         "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
         PreparedStatement stmt =
-            con.prepareStatement("insert into pms_task(content, deadline, stat, owner) values(?,?,?,?)");) {
+            con.prepareStatement("insert into pms_task(content,deadline,owner,status) values(?,?,?,?)");) {
 
       stmt.setString(1, t.getContent());
-      stmt.setDate(1, t.getDeadline());
-      stmt.setInt(1, t.getStatus());
-      stmt.setString(1, t.getOwner());
+      stmt.setDate(2, t.getDeadline());
+      stmt.setString(3, t.getOwner());
+      stmt.setInt(4, t.getStatus());
       stmt.executeUpdate();
       System.out.println("작업을 등록했습니다.");
     }

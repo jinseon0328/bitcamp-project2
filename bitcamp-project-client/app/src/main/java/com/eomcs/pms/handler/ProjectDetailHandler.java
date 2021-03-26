@@ -17,20 +17,19 @@ public class ProjectDetailHandler implements Command {
     try (Connection con = DriverManager.getConnection(
         "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
         PreparedStatement stmt =con.prepareStatement(
-            "insert into pms_project(title, content, sdt, edt, owner, members) "
-                + "values(?,?,?,?,?,?)");) {
+            "select * from pms_project where no=?"))  {
 
       stmt.setInt(1, no);
 
       try (ResultSet rs = stmt.executeQuery()) {
         if (!rs.next()) {
-          System.out.println("해당 번호의 게시글이 없습니다.");
+          System.out.println("해당 번호의 프로젝트가 없습니다.");
           return;
         }
 
         System.out.printf("프로젝트명: %s\n", rs.getString("title"));
         System.out.printf("내용: %s\n", rs.getString("contents"));
-        System.out.printf("시작일: %s\n", rs.getString("sdt"));
+        System.out.printf("시작일: %s\n", rs.getDate("sdt"));
         System.out.printf("종료일: %s %s\n", rs.getDate("edt"));
         System.out.printf("관리자: %s\n", rs.getString("owner"));
         System.out.printf("팀원: %s\n", rs.getString("members"));

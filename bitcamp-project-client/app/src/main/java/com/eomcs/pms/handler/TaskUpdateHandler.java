@@ -27,7 +27,7 @@ public class TaskUpdateHandler implements Command {
         PreparedStatement stmt = con.prepareStatement(
             "select * from pms_task where no=?");
         PreparedStatement stmt2 = con.prepareStatement(
-            "update pms_task set content=?,deadline=?,owner=?,stat=? where no=?")) {
+            "update pms_task set content=?,deadline=?,owner=?,status=? where no=?")) {
 
       Task task = new Task();
 
@@ -43,7 +43,7 @@ public class TaskUpdateHandler implements Command {
         task.setContent(rs.getString("content"));
         task.setDeadline(rs.getDate("deadline"));
         task.setOwner(rs.getString("owner"));
-        task.setStatus(rs.getInt("stat"));
+        task.setStatus(rs.getInt("status"));
       }
 
       // 2) 사용자에게서 변경할 데이터를 입력 받는다.
@@ -53,7 +53,8 @@ public class TaskUpdateHandler implements Command {
       task.setStatus(Prompt.inputInt(String.format(
           "상태(%s)?\n0: 신규\n1: 진행중\n2: 완료\n> ", 
           Task.getStatusLabel(task.getStatus()))));
-      task.setOwner(memberValidator.inputMember(String.format("담당자(%s)?(취소: 빈 문자열) ", task.getOwner())));
+      task.setOwner(memberValidator.inputMember(
+          String.format("담당자(%s)?(취소: 빈 문자열) ", task.getOwner())));
       if(task.getOwner() == null) {
         System.out.println("작업 변경을 취소합니다.");
         return;

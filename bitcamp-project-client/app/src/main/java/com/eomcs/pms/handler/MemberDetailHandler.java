@@ -23,7 +23,7 @@ public class MemberDetailHandler implements Command {
 
       try (ResultSet rs = stmt.executeQuery()) {
         if (!rs.next()) {
-          System.out.println("해당 번호의 게시글이 없습니다.");
+          System.out.println("해당 번호의 회원이 없습니다.");
           return;
         }
 

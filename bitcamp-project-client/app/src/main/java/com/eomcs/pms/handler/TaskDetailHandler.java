@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import com.eomcs.pms.domain.Task;
 import com.eomcs.util.Prompt;
 
 public class TaskDetailHandler implements Command {
@@ -29,7 +30,7 @@ public class TaskDetailHandler implements Command {
         }
         System.out.printf("내용: %s\n", rs.getString("contents"));
         System.out.printf("마감일: %s\n", rs.getDate("deadline"));
-        System.out.printf("상태: %s %s\n", rs.getString("stat"));
+        System.out.printf("상태: %s\n", Task.getStatusLabel(rs.getInt("status")));
         System.out.printf("담당자: %s\n", rs.getString("owner"));
       }
     }

@@ -45,7 +45,7 @@ public class ProjectUpdateHandler implements Command {
         project.setStartDate(rs.getDate("sdt"));
         project.setEndDate(rs.getDate("edt"));
         project.setOwner(rs.getString("owner"));
-        project.setMembers(rs.getString("member"));
+        project.setMembers(rs.getString("members"));
 
       }
       // (2) 사용자에게서 변경할 데이터를 입력 받는다
