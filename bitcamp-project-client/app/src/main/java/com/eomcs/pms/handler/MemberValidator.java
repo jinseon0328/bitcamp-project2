@@ -13,10 +13,11 @@ public class MemberValidator {
 
   public Member inputMember(String promptTitle) throws Exception {
 
-    try (Connection con = DriverManager.getConnection( //
+    try (Connection con = DriverManager.getConnection(
         "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
-        PreparedStatement stmt = con.prepareStatement( //
+        PreparedStatement stmt = con.prepareStatement(
             "select no,name,email from pms_member where name=?")) {
+
       while (true) {
         String name = Prompt.inputString(promptTitle);
         if (name.length() == 0) {
@@ -25,10 +26,7 @@ public class MemberValidator {
         stmt.setString(1, name);
 
         try (ResultSet rs = stmt.executeQuery()) {
-          rs.next();
-          // 1 -> count(*)이어서 count(*)라는 컬럼명을 줘도 되지만
-          // count(*) 컬럼이 한개이므로 컬럼명을 다시 지정하지말고 1로 대체 가능하다
-          if(rs.next()) {
+          if (rs.next()) {
             Member member = new Member();
             member.setNo(rs.getInt("no"));
             member.setName(rs.getString("name"));
@@ -40,8 +38,10 @@ public class MemberValidator {
       }
     }
   }
+
   public List<Member> inputMembers(String promptTitle) throws Exception {
     ArrayList<Member> members = new ArrayList<>();
+
     while (true) {
       Member member = inputMember(promptTitle);
       if (member == null) {
@@ -53,7 +53,6 @@ public class MemberValidator {
   }
 
 }
-
 
 
 
