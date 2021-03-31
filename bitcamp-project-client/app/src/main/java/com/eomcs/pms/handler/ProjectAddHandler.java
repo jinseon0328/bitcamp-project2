@@ -6,12 +6,12 @@ import com.eomcs.util.Prompt;
 
 public class ProjectAddHandler implements Command {
 
-  MemberValidator memberValidator;
   ProjectDao projectDao;
+  MemberValidator memberValidator;
 
-  public ProjectAddHandler(MemberValidator memberValidator, ProjectDao projectDao) {
+  public ProjectAddHandler(ProjectDao projectDao, MemberValidator memberValidator) {
+    this.projectDao = projectDao;
     this.memberValidator = memberValidator;
-    this. projectDao = projectDao;
   }
 
   @Override
@@ -19,7 +19,6 @@ public class ProjectAddHandler implements Command {
     System.out.println("[프로젝트 등록]");
 
     Project p = new Project();
-
     p.setTitle(Prompt.inputString("프로젝트명? "));
     p.setContent(Prompt.inputString("내용? "));
     p.setStartDate(Prompt.inputDate("시작일? "));

@@ -1,5 +1,7 @@
 package com.eomcs.pms;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,6 +9,11 @@ import java.util.LinkedList;
 import com.eomcs.pms.dao.BoardDao;
 import com.eomcs.pms.dao.MemberDao;
 import com.eomcs.pms.dao.ProjectDao;
+import com.eomcs.pms.dao.TaskDao;
+import com.eomcs.pms.dao.mariadb.BoardDaoImpl;
+import com.eomcs.pms.dao.mariadb.MemberDaoImpl;
+import com.eomcs.pms.dao.mariadb.ProjectDaoImpl;
+import com.eomcs.pms.dao.mariadb.TaskDaoImpl;
 import com.eomcs.pms.handler.BoardAddHandler;
 import com.eomcs.pms.handler.BoardDeleteHandler;
 import com.eomcs.pms.handler.BoardDetailHandler;
@@ -63,17 +70,14 @@ public class ClientApp {
   public void execute() throws Exception {
 
     // DAO 객체가 사용할 Connection 객체를 생성하여 주입한다.
-    //    try {
-    //      Connection con = DriverManager.getConnection(
-    //          "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
-    //    } catch (Exception e) {
-    //      System.out.println("DB 커넥션 객체 생성 중 오류 발생!");
-    //    }
+    Connection con = DriverManager.getConnection(
+        "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");   
 
     //핸들러가 사용할 DAO 객체 준비
-    BoardDao boardDao =new BoardDao();
-    MemberDao memberDao = new MemberDao();
-    ProjectDao projectDao = new ProjectDao();
+    BoardDao boardDao = new BoardDaoImpl(con);
+    MemberDao memberDao = new MemberDaoImpl(con);
+    ProjectDao projectDao = new ProjectDaoImpl(con);
+    TaskDao taskDao = new TaskDaoImpl(con);
 
     // 사용자 명령을 처리하는 객체를 맵에 보관한다.
     HashMap<String,Command> commandMap = new HashMap<>();
@@ -91,18 +95,19 @@ public class ClientApp {
     commandMap.put("/member/update", new MemberUpdateHandler(memberDao));
     commandMap.put("/member/delete", new MemberDeleteHandler(memberDao));
 
-    MemberValidator memberValidator = new MemberValidator();
-    commandMap.put("/project/add", new ProjectAddHandler(memberValidator, projectDao));
-    commandMap.put("/project/list", new ProjectListHandler());
-    commandMap.put("/project/detail", new ProjectDetailHandler());
-    commandMap.put("/project/update", new ProjectUpdateHandler( memberValidator));
-    commandMap.put("/project/delete", new ProjectDeleteHandler());
+    MemberValidator memberValidator = new MemberValidator(memberDao);
 
-    commandMap.put("/task/add", new TaskAddHandler(memberValidator));
-    commandMap.put("/task/list", new TaskListHandler());
-    commandMap.put("/task/detail", new TaskDetailHandler());
-    commandMap.put("/task/update", new TaskUpdateHandler(memberValidator));
-    commandMap.put("/task/delete", new TaskDeleteHandler());
+    commandMap.put("/project/add", new ProjectAddHandler(projectDao, memberValidator));
+    commandMap.put("/project/list", new ProjectListHandler(projectDao));
+    commandMap.put("/project/detail", new ProjectDetailHandler(projectDao));
+    commandMap.put("/project/update", new ProjectUpdateHandler(projectDao, memberValidator));
+    commandMap.put("/project/delete", new ProjectDeleteHandler(projectDao));
+
+    commandMap.put("/task/add", new TaskAddHandler(taskDao, projectDao, memberValidator));
+    commandMap.put("/task/list", new TaskListHandler(taskDao));
+    commandMap.put("/task/detail", new TaskDetailHandler(taskDao));
+    commandMap.put("/task/update", new TaskUpdateHandler(taskDao, projectDao, memberValidator));
+    commandMap.put("/task/delete", new TaskDeleteHandler(taskDao));
 
 
     try {// 서버와 통신하는 것을 대행해 줄 객체를 준비한다.
@@ -158,6 +163,7 @@ public class ClientApp {
     } catch (Exception e) {
       System.out.println("서버와 통신하는 중에 오류 발생!");
     }
+    con.close();
     Prompt.close();
   }
 

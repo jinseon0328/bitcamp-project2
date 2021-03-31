@@ -6,9 +6,9 @@ public class Task {
   private int no;
   private String content;
   private Date deadline;
-  private Member owner; //task 안에 멤버 객체 주소를 번호로 구현하는 방법
-  private int status;  
-  private int projectNo; //task 안에 project 번호로 필드만 받아서 구현하는 방법
+  private Member owner;
+  private int status;
+  private int projectNo;
   private String projectTitle;
 
   @Override
@@ -47,7 +47,6 @@ public class Task {
   public void setOwner(Member owner) {
     this.owner = owner;
   }
-
   public int getProjectNo() {
     return projectNo;
   }
@@ -60,6 +59,7 @@ public class Task {
   public void setProjectTitle(String projectTitle) {
     this.projectTitle = projectTitle;
   }
+
   public static String getStatusLabel(int status) {
     switch (status) {
       case 1:
