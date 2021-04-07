@@ -7,10 +7,7 @@ import com.eomcs.pms.dao.ProjectDao;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.domain.Project;
 
-//한 번에 4번째 단계까지 가지말고 일단 3번째와 4번째 단계 사이에 있는 정도로 구현을 해보자.
-//- 각 DAO 클래스는 Connection 객체를 공유하기 위해 인스턴스 필드로 선언한다.
-//- 각 DAO 클래스는 DAO 인스턴스가 생성될 때 Connection 객체를 만든다.
-public class ProjectDaoImpl implements ProjectDao{
+public class ProjectDaoImpl implements ProjectDao {
 
   SqlSession sqlSession;
 
@@ -20,68 +17,105 @@ public class ProjectDaoImpl implements ProjectDao{
 
   @Override
   public int insert(Project project) throws Exception {
+    // 1) 프로젝트 정보를 입력한다.
     int count = sqlSession.insert("ProjectMapper.insert", project);
 
-    for (Member member : project.getMembers()) {
-      insertMember(project.getNo(), member.getNo());
-    }
+    // 2) 프로젝트의 팀원 정보를 입력한다.
+    //    for (Member member : project.getMembers()) {
+    //      insertMember(project.getNo(), member.getNo());
+    //    }
+    insertMembers(project.getNo(), project.getMembers());
+
     return count;
   }
 
   @Override
-  public List<Project> findAll() throws Exception {
-    return sqlSession.selectList("ProjectMapper.findAll");
-    //    List<Project> projects = sqlSession.selectList("ProjectMapper.findAll");
-    //    for (Project p : projects) {
-    //      p.setMembers(findAllMembers(p.getNo()));
-    //    }
-    //    return projects;
+  public List<Project> findByKeyword(String item, String keyword) throws Exception {
+
+    HashMap<String,Object> params = new HashMap<>();
+    params.put("item", item);
+    params.put("keyword", keyword);
+
+    return sqlSession.selectList("ProjectMapper.findByKeyword", params);
+  }
+
+  @Override
+  public List<Project> findByKeywords(String title, String owner, String member) throws Exception {
+
+    HashMap<String,Object> params = new HashMap<>();
+    params.put("title", title);
+    params.put("owner", owner);
+    params.put("member", member);
+
+    return sqlSession.selectList("ProjectMapper.findByKeyword", params);
   }
 
   @Override
   public Project findByNo(int no) throws Exception {
-    return sqlSession.selectOne("ProjectMapper.findAll", no);
-    //    Project project = sqlSession.selectOne("ProjectMapper.findByNo", no);
-    //    project.setMembers(findAllMembers(no));
-    //    return project;
+    return sqlSession.selectOne("ProjectMapper.findByNo", no);
   }
 
   @Override
   public int update(Project project) throws Exception {
-    int count = sqlSession.update("Project.update", project);
+    // 1) 프로젝트 정보를 변경한다.
+    int count = sqlSession.update("ProjectMapper.update", project);
 
+    // 2) 프로젝트의 기존 멤버를 모두 삭제한다.
     deleteMembers(project.getNo());
 
-    for (Member member : project.getMembers()) {
-      insertMember(project.getNo(), member.getNo());
-    }
+    // 3) 프로젝트 멤버를 추가한다.
+    //    for (Member member : project.getMembers()) {
+    //      insertMember(project.getNo(), member.getNo());
+    //    }
+    insertMembers(project.getNo(), project.getMembers());
+
     return count;
   }
 
   @Override
   public int delete(int no) throws Exception {
-
+    // 1) 프로젝트에 소속된 팀원 정보 삭제
     deleteMembers(no);
 
+    // 2) 프로젝트 삭제
     return sqlSession.delete("ProjectMapper.delete", no);
   }
 
   @Override
   public int insertMember(int projectNo, int memberNo) throws Exception {
-    HashMap<String, Object> params = new HashMap<>();
+    HashMap<String,Object> params = new HashMap<>();
     params.put("projectNo", projectNo);
     params.put("memberNo", memberNo);
     return sqlSession.insert("ProjectMapper.insertMember", params);
   }
 
+  @Override
+  public int insertMembers(int projectNo, List<Member> members) throws Exception {
+    HashMap<String,Object> params = new HashMap<>();
+    params.put("projectNo", projectNo);
+    params.put("members", members);
+    return sqlSession.insert("ProjectMapper.insertMembers", params);
+  }
+
+  @Override
   public List<Member> findAllMembers(int projectNo) throws Exception {
     return sqlSession.selectList("ProjectMapper.findAllMembers", projectNo);
   }
 
   @Override
   public int deleteMembers(int projectNo) throws Exception {
-    return sqlSession.delete("ProjectMapper.deletMembers", projectNo);
+    return sqlSession.delete("ProjectMapper.deleteMembers", projectNo);
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 

@@ -33,3 +33,9 @@ public class MemberDeleteHandler implements Command {
     }
   }
 }
+
+
+
+
+
+

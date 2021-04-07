@@ -18,7 +18,16 @@ public interface TaskDao {
   int delete(int no) throws Exception;
 
   int deleteByProjectNo(int projectNo) throws Exception;
-
-  // 기존에 구현한 프로젝트에 영향을 끼칠 경우 사용
-  // default int deleteByProjectNo(int projectNo) throws Exception {return 0;};
 }
+
+
+
+
+
+
+
+
+
+
+
+

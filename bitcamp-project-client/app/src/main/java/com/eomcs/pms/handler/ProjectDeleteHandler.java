@@ -26,8 +26,10 @@ public class ProjectDeleteHandler implements Command {
       return;
     }
 
+    // 1) 프로젝트의 작업들을 모두 삭제한다.
     taskDao.deleteByProjectNo(no);
 
+    // 2) 프로젝트를 삭제한다.
     if (projectDao.delete(no) == 0) {
       System.out.println("해당 번호의 프로젝트가 없습니다.");
 
@@ -36,4 +38,11 @@ public class ProjectDeleteHandler implements Command {
     }
   }
 }
+
+
+
+
+
+
+
 

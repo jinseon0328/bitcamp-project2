@@ -35,7 +35,9 @@ import com.eomcs.pms.handler.MemberValidator;
 import com.eomcs.pms.handler.ProjectAddHandler;
 import com.eomcs.pms.handler.ProjectDeleteHandler;
 import com.eomcs.pms.handler.ProjectDetailHandler;
+import com.eomcs.pms.handler.ProjectDetailSearchHandler;
 import com.eomcs.pms.handler.ProjectListHandler;
+import com.eomcs.pms.handler.ProjectSearchHandler;
 import com.eomcs.pms.handler.ProjectUpdateHandler;
 import com.eomcs.pms.handler.TaskAddHandler;
 import com.eomcs.pms.handler.TaskDeleteHandler;
@@ -47,21 +49,19 @@ import com.eomcs.util.Prompt;
 public class ClientApp {
 
   // 사용자가 입력한 명령을 저장할 컬렉션 객체 준비
-
   ArrayDeque<String> commandStack = new ArrayDeque<>();
   LinkedList<String> commandQueue = new LinkedList<>();
-
 
   String serverAddress;
   int port;
 
   public static void main(String[] args) {
     ClientApp app = new ClientApp("localhost", 8888);
-    //192.168.0.67
 
     try {
       app.execute();
-    }catch (Exception e) {
+
+    } catch (Exception e) {
       System.out.println("클라이언트 실행 중 오류 발생!");
       e.printStackTrace();
     }
@@ -82,14 +82,14 @@ public class ClientApp {
     SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(mybatisConfigStream);
 
     // DAO가 사용할 SqlSession 객체 준비
-    // => 단 auto commit으로 동작하는 SqlSession 객체를 준비한다.
+    // => 단 auto commit 으로 동작하는 SqlSession 객체를 준비한다.
     SqlSession sqlSession = sqlSessionFactory.openSession(true);
 
-    // DAO 객체가 사용할 Connection 객체를 생성하여 주입한다.
+    // DB Connection 객체 생성
     Connection con = DriverManager.getConnection(
-        "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");   
+        "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
 
-    //핸들러가 사용할 DAO 객체 준비
+    // 핸들러가 사용할 DAO 객체 준비
     BoardDao boardDao = new BoardDaoImpl(sqlSession);
     MemberDao memberDao = new MemberDaoImpl(sqlSession);
     ProjectDao projectDao = new ProjectDaoImpl(sqlSession);
@@ -118,6 +118,9 @@ public class ClientApp {
     commandMap.put("/project/detail", new ProjectDetailHandler(projectDao));
     commandMap.put("/project/update", new ProjectUpdateHandler(projectDao, memberValidator));
     commandMap.put("/project/delete", new ProjectDeleteHandler(projectDao, taskDao));
+    commandMap.put("/project/search", new ProjectSearchHandler(projectDao));
+    commandMap.put("/project/detailsearch", new ProjectDetailSearchHandler(projectDao));
+
 
     commandMap.put("/task/add", new TaskAddHandler(taskDao, projectDao, memberValidator));
     commandMap.put("/task/list", new TaskListHandler(taskDao));
@@ -125,16 +128,16 @@ public class ClientApp {
     commandMap.put("/task/update", new TaskUpdateHandler(taskDao, projectDao, memberValidator));
     commandMap.put("/task/delete", new TaskDeleteHandler(taskDao));
 
-
-    try {// 서버와 통신하는 것을 대행해 줄 객체를 준비한다.
+    try {
 
       while (true) {
 
         String command = com.eomcs.util.Prompt.inputString("명령> ");
 
-        if (command.length() == 0) {// 사용자가 빈 문자열을 입력하면 다시 입력하도록 요구한다.
+        if (command.length() == 0) {
           continue;
         }
+
         // 사용자가 입력한 명령을 보관해둔다.
         commandStack.push(command);
         commandQueue.offer(command);
@@ -144,17 +147,11 @@ public class ClientApp {
             case "history":
               printCommandHistory(commandStack.iterator());
               break;
-            case "history2": 
+            case "history2":
               printCommandHistory(commandQueue.iterator());
               break;
             case "quit":
             case "exit":
-              // 서버에게 종료한다고 메시지를 보낸다.
-
-              // 서버의 응답을 읽는다.
-              // - 서버가 보낸 응답을 읽지 않으면 프로토콜 위반이다.
-              // - 서버가 보낸 데이터를 사용하지 않더라도 프로토콜 규칙에 따라 읽어야 한다.
-
               System.out.println("안녕!");
               return;
             default:
@@ -164,8 +161,6 @@ public class ClientApp {
                 System.out.println("실행할 수 없는 명령입니다.");
               } else {
                 commandHandler.service();
-                // 이제 명령어와 그 명령어를 처리하는 핸들러를 추가할 때 마다
-                // case 문을 추가할 필요가 없다.
               }
           }
         } catch (Exception e) {
@@ -177,8 +172,9 @@ public class ClientApp {
       }
 
     } catch (Exception e) {
-      System.out.println("서버와 통신하는 중에 오류 발생!");
+      System.out.println("서버와 통신 하는 중에 오류 발생!");
     }
+
     con.close();
     Prompt.close();
   }
@@ -195,7 +191,4 @@ public class ClientApp {
       }
     }
   }
-
 }
-
-

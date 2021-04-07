@@ -7,7 +7,8 @@ import com.eomcs.util.Prompt;
 
 public class BoardSearchHandler implements Command {
 
-  // 핸들러가 사용할 DAO : 의존 객체 DAO
+
+  // 핸들러가 사용할 DAO : 의존 객체(dependency)
   BoardDao boardDao;
 
   // DAO 객체는 이 클래스가 작업하는데 필수 객체이기 때문에
@@ -15,6 +16,7 @@ public class BoardSearchHandler implements Command {
   public BoardSearchHandler(BoardDao boardDao) {
     this.boardDao = boardDao;
   }
+
   @Override
   public void service() throws Exception {
     String keyword = Prompt.inputString("검색어? ");
@@ -25,18 +27,19 @@ public class BoardSearchHandler implements Command {
     }
 
     List<Board> list = boardDao.findByKeyword(keyword);
-    if(list.size() == 0) {
+
+    if (list.size() == 0) {
       System.out.println("검색어에 해당하는 게시글이 없습니다.");
       return;
     }
 
-    for(Board b : list) {
+    for (Board b : list) {
       System.out.printf("%d, %s, %s, %s, %d\n", 
           b.getNo(), 
-          b.getTitle(),
+          b.getTitle(), 
           b.getWriter().getName(),
           b.getRegisteredDate(),
-          b.getViewCount());      
+          b.getViewCount());
     }
   }
 }

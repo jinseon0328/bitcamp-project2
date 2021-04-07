@@ -15,17 +15,17 @@ public class TaskDaoImpl implements TaskDao {
 
   @Override
   public int insert(Task task) throws Exception {
-    return sqlSession.insert("TaskMapper.insert");
-  }
-
-  @Override
-  public List<Task> findByProjectNo(int projectNo) throws Exception {
-    return sqlSession.selectList("TaskMapper.findByProjectNo");
+    return sqlSession.insert("TaskMapper.insert", task);
   }
 
   @Override
   public List<Task> findAll() throws Exception {
     return sqlSession.selectList("TaskMapper.findAll");
+  }
+
+  @Override
+  public List<Task> findByProjectNo(int projectNo) throws Exception {
+    return sqlSession.selectList("TaskMapper.findByProjectNo", projectNo);
   }
 
   @Override
@@ -48,4 +48,15 @@ public class TaskDaoImpl implements TaskDao {
     return sqlSession.delete("TaskMapper.deleteByProjectNo", projectNo);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
 

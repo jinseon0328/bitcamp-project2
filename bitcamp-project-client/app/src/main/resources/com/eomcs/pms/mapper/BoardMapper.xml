@@ -4,93 +4,82 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="BoardMapper">
-
-<resultMap id="boardMap" type="board">
-<id column="no" property="no"/>
-<result column="title" property="title"/>
-<result column="content" property="content"/>
-<result column="cdt" property="cdt"/>
-<result column="vw_cnt" property="vw_cnt"/>
-<result column="like_cnt" property="like_cnt"/>
-
-<association property="writer" javaType="board">
-<result column="writer_no" property="no"/>
-</association>
-
-
-</resultMap>
+  
+  <resultMap id="boardMap" type="board">
+    <id column="no" property="no"/>
+    <result column="title" property="title"/>
+    <result column="content" property="content"/>
+    <result column="cdt" property="registeredDate"/>
+    <result column="vw_cnt" property="viewCount"/>
+    <result column="like_cnt" property="like"/>
+    
+    <association property="writer" javaType="member">
+	    <id column="writer_no" property="no"/>
+	    <result column="writer_name" property="name"/>
+    </association>
+    
+  </resultMap>
   
   <insert id="insert" parameterType="board">
-  insert into pms_board(title, content, writer) 
-  values(#{title},#{content},#{writer.no})
+    insert into pms_board(title, content, writer) 
+    values(#{title}, #{content}, #{writer.no})
   </insert>
-  
-  <!-- findAll()에서 사용할 SQL -->
-  <select id="findAll" resultMap="boardMap">
-   select
-     b.no,
-     b.title,
-     b.cdt,
-     b.vw_cnt,
-     b.like_cnt,
-     m.no as writer_no,
-     m.name as writer_name
+
+  <select id="findByKeyword" resultMap="boardMap" parameterType="string">
+    select
+      b.no,
+      b.title,
+      b.cdt,
+      b.vw_cnt,
+      b.like_cnt,
+      m.no as writer_no,
+      m.name as writer_name
     from pms_board b
-     inner join pms_member m on m.no=b.writer
+      inner join pms_member m on m.no=b.writer
+    
+    <if test="value != null">
+    where 
+      b.title like concat('%', #{value},'%')
+      or b.content like concat('%', #{value},'%')
+      or m.name like concat('%', #{value},'%')
+    </if>
+    
     order by b.no desc
   </select>
   
-    <select id="findByKeyword" resultMap="boardMap" parameterType="string">
-   select
-     b.no,
-     b.title,
-     b.cdt,
-     b.vw_cnt,
-     b.like_cnt,
-     m.no as writer_no,
-     m.name as writer_name
+  <select id="findByNo" resultMap="boardMap" parameterType="int">
+    select
+      b.no,
+      b.title,
+      b.content,
+      b.cdt,
+      b.vw_cnt,
+      b.like_cnt,
+      m.no as writer_no,
+      m.name as writer_name
     from pms_board b
-     inner join pms_member m on m.no=b.writer
-    where
-     b.title like concat('%',#{value},'%')
-     b.content like concat('%',#{value},'%')
-     m.name like concat('%',#{value},'%')
-     order by b.no desc
+      inner join pms_member m on m.no=b.writer
+    where b.no = #{value}
   </select>
   
-  <select id="findByNo" resultMap="boardMap" parameterType="int">
-     select
-     b.no,
-     b.title,
-     b.content,
-     b.cdt,
-     b.vw_cnt,
-     b.like_cnt,
-     m.no as writer_no,
-     m.name as writer_name
-    from pms_board b
-     inner join pms_member m on m.no=b.writer
-    where b.no = #{value}
-    </select>
-    
-    <update id="update" parameterType="board">
+  <update id="update" parameterType="board">
     update pms_board set
-      title = #{title},
-      content = #{content}
+        title = #{title}, 
+        content = #{content}
     where no = #{no}
-    </update>
-    
-    <update id="updateViewCount" parameterType="int">
-   update pms_board set 
-   vw_cnt = vw_cnt + 1 
+  </update>
+  
+  <update id="updateViewCount" parameterType="int">
+    update pms_board set 
+      vw_cnt = vw_cnt + 1 
     where no = #{value}
-    </update>
-    
-    <delete id="delete" parameterType="int">
+  </update>
+  
+  <delete id="delete" parameterType="int">
     delete from pms_board 
     where no = #{value}
-    </delete>
-  
+  </delete>
+
 </mapper>
 
 
