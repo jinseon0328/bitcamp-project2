@@ -1,14 +1,17 @@
 package com.eomcs.pms.handler;
 
 import com.eomcs.pms.dao.ProjectDao;
+import com.eomcs.pms.dao.TaskDao;
 import com.eomcs.util.Prompt;
 
 public class ProjectDeleteHandler implements Command {
 
   ProjectDao projectDao;
+  TaskDao taskDao;
 
-  public ProjectDeleteHandler(ProjectDao projectDao) {
+  public ProjectDeleteHandler(ProjectDao projectDao, TaskDao taskDao) {
     this.projectDao = projectDao;
+    this.taskDao = taskDao;
   }
 
   @Override
@@ -22,6 +25,8 @@ public class ProjectDeleteHandler implements Command {
       System.out.println("프로젝트 삭제를 취소하였습니다.");
       return;
     }
+
+    taskDao.deleteByProjectNo(no);
 
     if (projectDao.delete(no) == 0) {
       System.out.println("해당 번호의 프로젝트가 없습니다.");

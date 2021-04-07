@@ -1,7 +1,5 @@
 package com.eomcs.pms.dao.mariadb;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import com.eomcs.pms.dao.MemberDao;
@@ -45,5 +43,10 @@ public class MemberDaoImpl implements MemberDao {
 
   @Override
   public Member findByName(String name) throws Exception {
-    return sqlSession.selectList("MemberMapper.findByName", name);
+    List<Member> members = sqlSession.selectList("MemberMapper.findByName", name);
+    if (members.size() == 0) {
+      return null;
+    }
+    return members.get(0);
   }
+}

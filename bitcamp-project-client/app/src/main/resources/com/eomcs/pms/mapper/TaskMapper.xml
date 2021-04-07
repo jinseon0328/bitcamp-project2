@@ -5,33 +5,25 @@
 
 <mapper namespace="TaskMapper">
 
-<resultMap id="taskMap" type="com.eomcs.pms.domain.Task">
-<id column="no" property="no"/>
-<result column="content" property="content"/>
-<result column="deadline" property="deadline"/>
-<result column="owner" property="owner"/>
-<result column="status" property="status"/>
-<result column="projectNo" property="projectNo"/>
-<result column="projectTitle" property="projectTitle"/>
+<resultMap id="taskMap" type="task">
+ <id column="no" property="no"/>
+ <result column="content" property="content"/>
+ <result column="deadline" property="deadline"/>
+ <result column="status" property="status"/>
+ <result column="project_no" property="projectNo"/>
+ <result column="project_title" property="projectTitle"/>
 
-<association property="owner" javaType="com.eomcs.pms.domain.Member"/>
-<association property="project" javaType="com.eomcs.pms.domain.Project">
-<result column="owner_no" property="no"/>
-<result column="owner_name" property="name"/>
-<result column="project_no" property="no"/>
-<result column="project_name" property="title"/>
-
+<association property="owner" javaType="task">
+ <id column="owner_no" property="no"/>
+ <result column="owner_name" property="name"/>
 </association>
-
-
 </resultMap>
   
-  <insert id="insert" parameterType="com.eomcs.pms.domain.Task">
+  <insert id="insert" parameterType="task">
   insert into pms_task(content,deadline,owner,status,project_no) 
-  values(#{content},#{deadline},#{owner},#{status},#{project_no})
+  values(#{content},#{deadline},#{owner.no},#{status},#{projectNo})
   </insert>
   
-  <!-- findAll()에서 사용할 SQL -->
   <select id="findAll" resultMap="taskMap">
         select 
            t.no,
@@ -42,29 +34,33 @@
             m.name as owner_name,
             p.no as project_no,
             p.title as project_title
-          from pms_task t
+          from
+           pms_task t
             inner join pms_member m on t.owner=m.no
             inner join pms_project p on t.project_no=p.no
-         where t.project_no=? or 0=?
-         order by p.no desc, t.content asc
+         order by 
+            p.no desc, t.content asc
   </select>
   
-    <select id="findByKeyword" resultMap="taskMap" parameterType="string">
+    <select id="findByNo" resultMap="taskMap" parameterType="int">
    select
      b.no,
-     b.title,
-     b.cdt,
-     b.vw_cnt,
-     b.like_cnt,
-     m.no as writer_no,
-     m.name as writer_name
-    from pms_board b
-     inner join pms_member m on m.no=b.writer
+     b.content,
+     b.deadline,
+     b.status,
+     m.no as owner_no,
+     m.name as owner_name,
+     p.no as project_no,
+     p.title as project_title
+    from
+     pms_task t
+      inner join pms_member m on t.owner=m.no
+      inner join pms_project p on t.project_no=p.no
     where
-     b.title like concat('%',#{value},'%')
-     b.content like concat('%',#{value},'%')
-     m.name like concat('%',#{value},'%')
-     order by b.no desc
+  where
+      p.no = #{value}
+    order by 
+      p.no desc, t.content asc
   </select>
   
   <select id="findByNo" resultMap="taskMap" parameterType="int">
@@ -83,25 +79,25 @@
       where t.no=#{no}
     </select>
     
-    <update id="update" parameterType="com.eomcs.pms.domain.Board">
+    <update id="update" parameterType="task">
   update pms_task set 
   content = #{content},
   deadline = #{deadline},
-  owner = #{owner},
+  owner = #{owner.no},
   status = #{status},
   project_no = #{project_no} 
   where no = #{no}
     </update>
     
-    <update id="updateViewCount" parameterType="int">
-   update pms_board set 
-   vw_cnt = vw_cnt + 1 
-    where no = #{value}
-    </update>
     
     <delete id="delete" parameterType="int">
     delete from pms_task 
     where no = #{no}
+    </delete>
+    
+    <delete id="deleteByProjectNo" parameterType="int">
+    delete from pms_task 
+    where project_no = #{value}
     </delete>
   
 </mapper>

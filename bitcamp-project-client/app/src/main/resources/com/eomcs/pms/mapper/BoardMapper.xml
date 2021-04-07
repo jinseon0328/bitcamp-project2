@@ -5,7 +5,7 @@
 
 <mapper namespace="BoardMapper">
 
-<resultMap id="boardMap" type="com.eomcs.pms.domain.Board">
+<resultMap id="boardMap" type="board">
 <id column="no" property="no"/>
 <result column="title" property="title"/>
 <result column="content" property="content"/>
@@ -13,14 +13,14 @@
 <result column="vw_cnt" property="vw_cnt"/>
 <result column="like_cnt" property="like_cnt"/>
 
-<association property="writer" javaType="com.eomcs.pms.domain.Member">
+<association property="writer" javaType="board">
 <result column="writer_no" property="no"/>
 </association>
 
 
 </resultMap>
   
-  <insert id="insert" parameterType="com.eomcs.pms.domain.Board">
+  <insert id="insert" parameterType="board">
   insert into pms_board(title, content, writer) 
   values(#{title},#{content},#{writer.no})
   </insert>
@@ -73,7 +73,7 @@
     where b.no = #{value}
     </select>
     
-    <update id="update" parameterType="com.eomcs.pms.domain.Board">
+    <update id="update" parameterType="board">
     update pms_board set
       title = #{title},
       content = #{content}

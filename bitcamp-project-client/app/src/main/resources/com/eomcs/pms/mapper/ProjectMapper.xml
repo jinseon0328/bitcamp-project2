@@ -5,25 +5,97 @@
   
   <mapper namespace="ProjectMapper">
   
-  <resultMap id="projectMap" type="com.eomcs.pms.domain.Project">
+  <resultMap id="projectMap" type="project">
     <id column="no" property="no"/>
     <result column="title" property="title"/>
     <result column="content" property="content"/>
-    <result column="startDate" property="startDate"/>
-    <result column="endDate" property="startDate"/>
+    <result column="sdt" property="startDate"/>
+    <result column="edt" property="endDate"/>
+    
+   <association property="owner" javaType="project">
+     <id column="owner_no" property="no"/>
+     <result column="owner_name" property="name"/>
+    </association>
+    <collection property="Members" ofType="com.eomcs.pms.domain.Member">
+    <id column="member_no" property="no"/>
+      <result column="member_name" property="name"/>
+    </collection>
    
-  
-  
-  
-  
   </resultMap>
   
+  <insert id="insert" parameterType="project"
+            useGeneratedKeys="true" keyColumn="no" keyProperty="no">
+    insert into pms_project(title,content,sdt,edt,owner) 
+    values(#{title},#{content},#{startDate},#{endDate},#{owner.no})
+  </insert>
   
+  <select id="findAll" resultMap="projectMap">
+    select 
+          p.no,
+          p.title,
+          p.sdt,
+          p.edt,
+          m.no as owner_no,
+          m.name as owner_name
+          m2.no as member_no,
+          m2.name as member_name
+       from pms_project p
+       inner join pms_member m on p.owner=m.no
+       left outer join pms_member_projcet mp on mp.project_no=p.no
+       left outer join pms_member m2 on mp.member_no=m2.no
+       order by title asc
+  </select>
   
+  <select id="findByNo" resultMap="projectMap" parameterType="int">
+      select 
+          p.no,
+          p.title,
+          p.content,
+          p.sdt,
+          p.edt,
+          m.no as owner_no,
+          m.name as owner_name,
+          m2.no as member_no,
+          m2.name as member_name
+       from pms_project p
+          inner join pms_member m on p.owner=m.no
+          left outer join pms_member_projcet mp on mp.project_no=p.no
+          left outer join pms_member m2 on mp.member_no=m2.no
+       where p.no={value}
+  </select>
   
+  <update id="update" parameterType="project">
+        update pms_project set 
+          title=#{title},
+          content=#{content},
+          sdt=#{startDate},
+          edt=#{startDate},
+          owner=#{owner.no}
+          where no=#{no}
+  </update>
   
+  <delete id="delete" parameterType="int">
+    delete from pms_project
+    where no = #{value}
+  </delete>
   
+  <insert id="insertMember" parameterType="map">
+   insert into pms_member_project(member_no,project_no) 
+   values(#{memberNO}, #{projectNo})
+  </insert>
   
+  <delete id="deleteMembers" parameterType="int">
+   delete from pms_member_project 
+   where project_no=#{value}
+  </delete>
   
-  
+  <select id="findAllMembers" resultMap="com.eomcs.pms.domain.Member" parameterType="int">
+     select
+        m.no,  
+        m.name 
+    from pms_member_project mp 
+        inner join pms_member m on mp.member_no=m.no
+    where 
+        mp.project_no=#{value}
+  </select>
   </mapper>
