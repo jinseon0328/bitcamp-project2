@@ -17,27 +17,8 @@ public class ProjectDaoImpl implements ProjectDao {
 
   @Override
   public int insert(Project project) throws Exception {
-    try {
-      // 1) 프로젝트 정보를 입력한다.
-      int count = sqlSession.insert("ProjectMapper.insert", project);
+    return sqlSession.insert("ProjectMapper.insert", project);
 
-      // 일부러 예외를 발생시킨다.
-      // => 그러면 프로젝트 멤버는 등록되지 않을 것이다.
-      // => 자동 커밋 모드 -> 프로젝트 정보만 등록될 것이다.
-      // => 수동 커밋 모드 -> 이전에 수행한 작업을 취소하기 때문에 프로젝트 정보는 등록되지 않는다.
-      if (count > 0) {
-        throw new Exception("프로젝트 등록 후 일부러 예외 발생!");
-      }
-
-      insertMembers(project.getNo(), project.getMembers());
-
-      sqlSession.commit();
-      return count;
-    } catch (Exception e) {
-      sqlSession.rollback();
-
-      throw e;
-    }
   }
   @Override
   public List<Project> findByKeyword(String item, String keyword) throws Exception {
@@ -67,41 +48,13 @@ public class ProjectDaoImpl implements ProjectDao {
 
   @Override
   public int update(Project project) throws Exception {
-    try {
-      // 1) 프로젝트 정보를 변경한다.
-      int count = sqlSession.update("ProjectMapper.update", project);
-
-      // 2) 프로젝트의 기존 멤버를 모두 삭제한다.
-      deleteMembers(project.getNo());
-
-      // 3) 프로젝트 멤버를 추가한다.
-      //    for (Member member : project.getMembers()) {
-      //      insertMember(project.getNo(), member.getNo());
-      //    }
-      insertMembers(project.getNo(), project.getMembers());
-      sqlSession.commit();
-      return count;
-    } catch (Exception e) {
-      sqlSession.rollback();
-      throw e;
-    }
+    return sqlSession.update("ProjectMapper.update", project);
   }
 
   @Override
   public int delete(int no) throws Exception {
-    try {
-      // 1) 프로젝트에 소속된 팀원 정보 삭제
-      deleteMembers(no);
-
-      // 2) 프로젝트 삭제
-      int count = sqlSession.delete("ProjectMapper.delete", no);
-      sqlSession.commit();
-      return count;
-
-    } catch (Exception e) {
-      sqlSession.rollback();
-      throw e;
-    }
+    // 이제 너는 프로젝트 삭제만 해
+    return  sqlSession.delete("ProjectMapper.delete", no);
   }
 
   @Override
@@ -109,27 +62,15 @@ public class ProjectDaoImpl implements ProjectDao {
     HashMap<String,Object> params = new HashMap<>();
     params.put("projectNo", projectNo);
     params.put("memberNo", memberNo);
-    int count = sqlSession.insert("ProjectMapper.insertMember", params);
-    sqlSession.commit();
-    return count;
+    return sqlSession.insert("ProjectMapper.insertMember", params);
   }
 
   @Override
   public int insertMembers(int projectNo, List<Member> members) throws Exception {
-    try {
-      HashMap<String,Object> params = new HashMap<>();
-      params.put("projectNo", projectNo);
-      params.put("members", members);
-      int count = sqlSession.insert("ProjectMapper.insertMembers", params);
-      if (count > 0) {
-        throw new Exception("프로젝트 멤버를 등록한 후 일부러 예외 발생!");
-      }
-      sqlSession.commit();
-      return count;
-    }catch(Exception e) {
-      sqlSession.rollback();
-      throw e;
-    }
+    HashMap<String,Object> params = new HashMap<>();
+    params.put("projectNo", projectNo);
+    params.put("members", members);
+    return sqlSession.insert("ProjectMapper.insertMembers", params);
   }
 
   @Override
@@ -139,9 +80,7 @@ public class ProjectDaoImpl implements ProjectDao {
 
   @Override
   public int deleteMembers(int projectNo) throws Exception {
-    int count = sqlSession.delete("ProjectMapper.deleteMembers", projectNo);
-    sqlSession.commit();
-    return count;
+    return sqlSession.delete("ProjectMapper.deleteMembers", projectNo);
   }
 }
 
