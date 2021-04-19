@@ -21,12 +21,15 @@ repositories {
 }
 
 dependencies {
-    //mariaDB JDBC 드라이버
+     //mariaDB JDBC 드라이버
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.2'
+    
+    // Mybatis 퍼시스턴스 프레임 워크
+    implementation 'org.mybatis:mybatis:3.5.6'
+    
     testImplementation 'junit:junit:4.13'
  implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.guava:guava:29.0-jre'
-    implementation 'org.mybatis:mybatis:3.5.6'
 }
 
 application {
