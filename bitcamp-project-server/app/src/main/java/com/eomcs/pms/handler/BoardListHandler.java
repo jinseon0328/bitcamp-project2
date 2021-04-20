@@ -8,7 +8,7 @@ import com.eomcs.pms.util.CommandRequest;
 import com.eomcs.pms.util.CommandResponse;
 import com.eomcs.stereotype.Component;
 
-@Component(value="/board/list")
+@Component("/board/list")
 public class BoardListHandler implements Command {
 
   BoardService boardService;
