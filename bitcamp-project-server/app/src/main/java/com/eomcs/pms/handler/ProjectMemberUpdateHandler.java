@@ -5,12 +5,12 @@ import java.util.List;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.domain.Project;
 import com.eomcs.pms.service.ProjectService;
-import com.eomcs.pms.util.CommandRequest;
-import com.eomcs.pms.util.CommandResponse;
-import com.eomcs.pms.util.Prompt;
 import com.eomcs.stereotype.Component;
+import com.eomcs.util.CommandRequest;
+import com.eomcs.util.CommandResponse;
+import com.eomcs.util.Prompt;
 
-@Component(value="/project/memberUpdate")
+@Component("/project/memberUpdate")
 public class ProjectMemberUpdateHandler implements Command {
 
   ProjectService projectService;
@@ -42,7 +42,7 @@ public class ProjectMemberUpdateHandler implements Command {
     for (Member m : project.getMembers()) {
       out.printf("  %s(%d)\n", m.getName(), m.getNo());
     }
-    out.println("--------------------------------------");
+    out.println("---------------------------");
 
     // 프로젝트 팀원 정보를 입력 받는다.
     out.println("프로젝트의 멤버를 새로 등록하세요.");

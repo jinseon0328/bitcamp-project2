@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.service.MemberService;
-import com.eomcs.pms.util.CommandRequest;
-import com.eomcs.pms.util.CommandResponse;
-import com.eomcs.pms.util.Prompt;
+import com.eomcs.util.CommandRequest;
+import com.eomcs.util.CommandResponse;
+import com.eomcs.util.Prompt;
 
 public class MemberValidator {
 

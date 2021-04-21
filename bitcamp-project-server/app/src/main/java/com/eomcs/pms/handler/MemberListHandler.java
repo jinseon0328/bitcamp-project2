@@ -4,11 +4,11 @@ import java.io.PrintWriter;
 import java.util.List;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.service.MemberService;
-import com.eomcs.pms.util.CommandRequest;
-import com.eomcs.pms.util.CommandResponse;
 import com.eomcs.stereotype.Component;
+import com.eomcs.util.CommandRequest;
+import com.eomcs.util.CommandResponse;
 
-@Component(value="/member/list")
+@Component("/member/list")
 public class MemberListHandler implements Command {
 
   MemberService memberService;

@@ -4,12 +4,12 @@ import java.io.PrintWriter;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.domain.Project;
 import com.eomcs.pms.service.ProjectService;
-import com.eomcs.pms.util.CommandRequest;
-import com.eomcs.pms.util.CommandResponse;
-import com.eomcs.pms.util.Prompt;
 import com.eomcs.stereotype.Component;
+import com.eomcs.util.CommandRequest;
+import com.eomcs.util.CommandResponse;
+import com.eomcs.util.Prompt;
 
-@Component(value="/project/memberDelete")
+@Component("/project/memberDelete")
 public class ProjectMemberDeleteHandler implements Command {
 
   ProjectService projectService;
@@ -39,7 +39,7 @@ public class ProjectMemberDeleteHandler implements Command {
     for (Member m : project.getMembers()) {
       out.printf("  %s(%d)\n", m.getName(), m.getNo());
     }
-    out.println("--------------------------------------");
+    out.println("---------------------------");
 
     String input = prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
     if (!input.equalsIgnoreCase("Y")) {

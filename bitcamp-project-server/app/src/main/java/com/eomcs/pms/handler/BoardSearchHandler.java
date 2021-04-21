@@ -7,25 +7,37 @@ import com.eomcs.pms.service.BoardService;
 import com.eomcs.stereotype.Component;
 import com.eomcs.util.CommandRequest;
 import com.eomcs.util.CommandResponse;
+import com.eomcs.util.Prompt;
 
-@Component("/board/list")
-public class BoardListHandler implements Command {
+@Component("/board/search")
+public class BoardSearchHandler implements Command {
 
   BoardService boardService;
 
-  public BoardListHandler(BoardService boardService) {
+  public BoardSearchHandler(BoardService boardService) {
     this.boardService = boardService;
   }
 
   @Override
   public void service(CommandRequest request, CommandResponse response) throws Exception {
     PrintWriter out = response.getWriter();
+    Prompt prompt = request.getPrompt();
 
-    out.println("[게시글 목록]");
+    String keyword = prompt.inputString("검색어? ");
 
-    List<Board> boards = boardService.list();
+    if (keyword.length() == 0) {
+      out.println("검색어를 입력하세요.");
+      return;
+    }
 
-    for (Board b : boards) {
+    List<Board> list = boardService.search(keyword);
+
+    if (list.size() == 0) {
+      out.println("검색어에 해당하는 게시글이 없습니다.");
+      return;
+    }
+
+    for (Board b : list) {
       out.printf("%d, %s, %s, %s, %d\n", 
           b.getNo(), 
           b.getTitle(), 

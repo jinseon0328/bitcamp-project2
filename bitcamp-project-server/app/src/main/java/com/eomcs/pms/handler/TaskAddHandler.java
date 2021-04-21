@@ -6,12 +6,12 @@ import com.eomcs.pms.domain.Project;
 import com.eomcs.pms.domain.Task;
 import com.eomcs.pms.service.ProjectService;
 import com.eomcs.pms.service.TaskService;
-import com.eomcs.pms.util.CommandRequest;
-import com.eomcs.pms.util.CommandResponse;
-import com.eomcs.pms.util.Prompt;
 import com.eomcs.stereotype.Component;
+import com.eomcs.util.CommandRequest;
+import com.eomcs.util.CommandResponse;
+import com.eomcs.util.Prompt;
 
-@Component(value="/task/add")
+@Component("/task/add")
 public class TaskAddHandler implements Command {
 
   TaskService taskService;

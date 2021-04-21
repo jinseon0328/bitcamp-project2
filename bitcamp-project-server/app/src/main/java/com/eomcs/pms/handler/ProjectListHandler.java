@@ -5,11 +5,11 @@ import java.util.List;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.domain.Project;
 import com.eomcs.pms.service.ProjectService;
-import com.eomcs.pms.util.CommandRequest;
-import com.eomcs.pms.util.CommandResponse;
 import com.eomcs.stereotype.Component;
+import com.eomcs.util.CommandRequest;
+import com.eomcs.util.CommandResponse;
 
-@Component(value="/project/list")
+@Component("/project/list")
 public class ProjectListHandler implements Command {
 
   ProjectService projectService;
@@ -21,7 +21,7 @@ public class ProjectListHandler implements Command {
   @Override
   public void service(CommandRequest request, CommandResponse response) throws Exception {
     PrintWriter out = response.getWriter();
-    System.out.println("[프로젝트 목록]");
+    out.println("[프로젝트 목록]");
 
     List<Project> projects = projectService.list();
 

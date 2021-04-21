@@ -2,12 +2,12 @@ package com.eomcs.pms.handler;
 
 import java.io.PrintWriter;
 import com.eomcs.pms.service.TaskService;
-import com.eomcs.pms.util.CommandRequest;
-import com.eomcs.pms.util.CommandResponse;
-import com.eomcs.pms.util.Prompt;
 import com.eomcs.stereotype.Component;
+import com.eomcs.util.CommandRequest;
+import com.eomcs.util.CommandResponse;
+import com.eomcs.util.Prompt;
 
-@Component(value="/task/delete")
+@Component("/task/delete")
 public class TaskDeleteHandler implements Command {
 
   TaskService taskService;

@@ -4,12 +4,12 @@ import java.io.PrintWriter;
 import java.util.List;
 import com.eomcs.pms.domain.Task;
 import com.eomcs.pms.service.TaskService;
-import com.eomcs.pms.util.CommandRequest;
-import com.eomcs.pms.util.CommandResponse;
-import com.eomcs.pms.util.Prompt;
 import com.eomcs.stereotype.Component;
+import com.eomcs.util.CommandRequest;
+import com.eomcs.util.CommandResponse;
+import com.eomcs.util.Prompt;
 
-@Component(value="/task/list")
+@Component("/task/list")
 public class TaskListHandler implements Command {
 
   TaskService taskService;

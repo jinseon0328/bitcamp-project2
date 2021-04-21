@@ -4,12 +4,12 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import com.eomcs.pms.domain.Board;
 import com.eomcs.pms.service.BoardService;
-import com.eomcs.pms.util.CommandRequest;
-import com.eomcs.pms.util.CommandResponse;
-import com.eomcs.pms.util.Prompt;
 import com.eomcs.stereotype.Component;
+import com.eomcs.util.CommandRequest;
+import com.eomcs.util.CommandResponse;
+import com.eomcs.util.Prompt;
 
-@Component(value="/board/detail")
+@Component("/board/detail")
 public class BoardDetailHandler implements Command {
 
   SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
