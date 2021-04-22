@@ -24,7 +24,7 @@
   </resultMap>
   
   <sql id="select1">
-      select
+    select
       p.no,
       p.title,
       p.sdt,
@@ -38,6 +38,7 @@
       left outer join pms_member_project mp on mp.project_no=p.no
       left outer join pms_member m2 on mp.member_no=m2.no
   </sql>
+  
   
   <insert id="insert" parameterType="project"
           useGeneratedKeys="true" keyColumn="no" keyProperty="no">
@@ -72,32 +73,32 @@
   <select id="findByKeyword" resultMap="projectMap" parameterType="map">
     <include refid="select1"/>
     <where>
-        <choose>
-	    <when test="item == 1">
-	    where p.title like concat('%', #{keyword}, '%')
-	    </when>
-	    <when test="item == 2">
-	    where m.name like concat('%', #{keyword}, '%')
-	    </when>
-	    <when test="item == 3">
-	    where m2.name like concat('%', #{keyword}, '%')
-	    </when>
+	    <choose>
+		    <when test="item == 1">
+		    p.title like concat('%', #{keyword}, '%')
+		    </when>
+		    <when test="item == 2">
+		    m.name like concat('%', #{keyword}, '%')
+		    </when>
+		    <when test="item == 3">
+		    m2.name like concat('%', #{keyword}, '%')
+		    </when>
 	    </choose>
-    </where> 
+    </where>
     order by title asc
   </select>
   
-    <select id="findByKeywords" resultMap="projectMap" parameterType="map">
+  <select id="findByKeywords" resultMap="projectMap" parameterType="map">
     <include refid="select1"/>
     <where>
-	    <if test="title !=''">
-	       p.title like concat('%', #{title}, '%')
+	    <if test="title != ''">
+	      p.title like concat('%', #{title}, '%')
 	    </if>
-	    <if test="owner !=''">
-	       and m.name = #{owner}
+	    <if test="owner != ''">
+	      and m.name = #{owner}
 	    </if>
-	    <if test="member !=''">
-	       and m2.name= #{member}
+	    <if test="member != ''">
+	      and m2.name = #{member}
 	    </if>
     </where>
     order by title asc
@@ -142,11 +143,11 @@
     values(#{memberNo}, #{projectNo})
   </insert>
   
-    <insert id="insertMembers" parameterType="map">
+  <insert id="insertMembers" parameterType="map">
     insert into pms_member_project(member_no,project_no) 
     values
     <foreach collection="members" item="m" separator=",">
-    (#{m.no}, #{projectNo})
+      (#{m.no}, #{projectNo})
     </foreach>
   </insert>
   

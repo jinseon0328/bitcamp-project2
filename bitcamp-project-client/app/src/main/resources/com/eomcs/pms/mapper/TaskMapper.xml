@@ -14,8 +14,8 @@
     <result column="project_title" property="projectTitle"/>
     
     <association property="owner" javaType="member">
-        <id column="owner_no" property="no"/>
-        <result column="owner_name" property="name"/>
+	    <id column="owner_no" property="no"/>
+	    <result column="owner_name" property="name"/>
     </association>
   </resultMap>
   
@@ -100,6 +100,7 @@
     where project_no = #{value}
   </delete>
 </mapper>
+
 
 
 
