@@ -26,7 +26,7 @@ public class HelloHandler implements Servlet {
   }
 
   @Override
-  public String getServletInfo() {
+  public String getServletInfo() { 
     return null;
   }
 
