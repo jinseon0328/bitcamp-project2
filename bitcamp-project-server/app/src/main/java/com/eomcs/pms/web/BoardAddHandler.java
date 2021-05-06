@@ -61,9 +61,8 @@ public class BoardAddHandler extends HttpServlet {
       out.println("<body>");
       out.println("<h1>게시글 등록 오류</h1>");
       out.printf("<pre>%s</pre>\n", strWriter.toString());
+      out.println("<p><a href='list'>목록</a></p>");
     }
-
-    out.println("<a href='list'>목록</a></p>");
 
     out.println("</body>");
     out.println("</html>");
