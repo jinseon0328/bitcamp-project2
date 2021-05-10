@@ -56,6 +56,7 @@ public class ProjectDetailSearchHandler extends HttpServlet {
             p.getOwner().getName(),
             strBuilder.toString());
       }
+
     } catch (Exception e) {
       StringWriter strWriter = new StringWriter();
       PrintWriter printWriter = new PrintWriter(strWriter);

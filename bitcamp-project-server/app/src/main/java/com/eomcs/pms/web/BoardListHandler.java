@@ -61,6 +61,8 @@ public class BoardListHandler extends HttpServlet {
             b.getRegisteredDate(),
             b.getViewCount());
       }
+
+      //테이블 종료하는 부분
       out.println("</tbody>");
       out.println("</table>");
 
