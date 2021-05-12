@@ -34,6 +34,7 @@ public class ProjectDeleteHandler extends HttpServlet {
       int no = Integer.parseInt(request.getParameter("no"));
 
       Project oldProject = projectService.get(no);
+
       if (oldProject == null) {
         throw new Exception("해당 번호의 게시글이 없습니다.");
       }
@@ -44,6 +45,7 @@ public class ProjectDeleteHandler extends HttpServlet {
       }
 
       projectService.delete(no);
+
       out.println("<meta http-equiv='Refresh' content='1;url=list'>");
       out.println("</head>");
       out.println("<body>");
@@ -67,6 +69,8 @@ public class ProjectDeleteHandler extends HttpServlet {
     out.println("</html>");
   }
 }
+
+
 
 
 

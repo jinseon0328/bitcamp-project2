@@ -56,13 +56,13 @@ public class ProjectDetailHandler extends HttpServlet {
       out.println("팀원: <br>");
 
       MemberService memberService = (MemberService) request.getServletContext().getAttribute("memberService");
-      List<Member> members = memberService.list();
+      List<Member> members = memberService.list(null);
       for (Member m : members) {
         out.printf("  <input type='checkbox' name='member' value='%d' %s>%s<br>\n", 
             m.getNo(), contain(project.getMembers(), m.getNo()) ? "checked" : "", m.getName());
       }
 
-      out.println("<input type='submit' value='변경'>");
+      out.println("<input type='submit' value='변경'> ");
       out.printf("<a href='delete?no=%d'>삭제</a>\n", project.getNo());
       out.println("</form>");
 
@@ -87,12 +87,6 @@ public class ProjectDetailHandler extends HttpServlet {
     return false;
   }
 }
-
-
-
-
-
-
 
 
 

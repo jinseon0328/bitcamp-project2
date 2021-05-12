@@ -3,6 +3,7 @@ package com.eomcs.pms.web;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,8 +14,8 @@ import com.eomcs.pms.domain.Project;
 import com.eomcs.pms.service.ProjectService;
 
 @SuppressWarnings("serial")
-@WebServlet("/project/memberDelete")
-public class ProjectMemberDeleteHandler extends HttpServlet {
+@WebServlet("/project/memberUpdate")
+public class ProjectMemberUpdateHandler extends HttpServlet {
 
   @Override
   protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -25,7 +26,7 @@ public class ProjectMemberDeleteHandler extends HttpServlet {
     response.setContentType("text/plain;charset=UTF-8");
     PrintWriter out = response.getWriter();
 
-    out.println("[프로젝트 멤버 삭제]");
+    out.println("[프로젝트 멤버 변경]");
 
     try {
       int no = Integer.parseInt(request.getParameter("no"));
@@ -39,14 +40,23 @@ public class ProjectMemberDeleteHandler extends HttpServlet {
 
       Member loginUser = (Member) request.getSession().getAttribute("loginUser");
       if (project.getOwner().getNo() != loginUser.getNo()) {
-        out.println("삭제 권한이 없습니다!");
+        out.println("변경 권한이 없습니다!");
         return;
       }
 
-      // 프로젝트의 기존 멤버를 모두 삭제한다.
-      projectService.deleteMembers(no);
+      // ...&member=1&member=18&member=23
+      String[] values = request.getParameterValues("member");
+      ArrayList<Member> memberList = new ArrayList<>();
+      for (String value : values) {
+        Member member = new Member();
+        member.setNo(Integer.parseInt(value));
+        memberList.add(member);
+      }
 
-      out.println("프로젝트 멤버를 삭제하였습니다.");
+      // 프로젝트의 멤버를 변경한다.
+      projectService.updateMembers(no, memberList);
+
+      out.println("프로젝트 멤버를 변경하였습니다.");
 
     } catch (Exception e) {
       StringWriter strWriter = new StringWriter();

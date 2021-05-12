@@ -26,7 +26,7 @@ public class HelloHandler implements Servlet {
   }
 
   @Override
-  public String getServletInfo() { 
+  public String getServletInfo() {
     return null;
   }
 
@@ -36,5 +36,7 @@ public class HelloHandler implements Servlet {
     PrintWriter out = response.getWriter();
     out.println("안녕하세요!");
     out.println("Hello!");
+
   }
+
 }

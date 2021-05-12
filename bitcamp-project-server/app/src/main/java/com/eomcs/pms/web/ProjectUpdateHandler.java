@@ -24,9 +24,6 @@ public class ProjectUpdateHandler extends HttpServlet {
 
     ProjectService projectService = (ProjectService) request.getServletContext().getAttribute("projectService");
 
-    // 클라이언트가 POST 요청으로 보낸 데이터가 UTF-8임을 알려준다.
-    request.setCharacterEncoding("UTF-8");
-
     response.setContentType("text/html;charset=UTF-8");
     PrintWriter out = response.getWriter();
 
@@ -41,7 +38,7 @@ public class ProjectUpdateHandler extends HttpServlet {
       Project oldProject = projectService.get(no);
 
       if (oldProject == null) {
-        throw new Exception("해당 번호의 게시글이 없습니다.");
+        throw new Exception("해당 번호의 프로젝트가 없습니다.");
       } 
 
       Member loginUser = (Member) request.getSession().getAttribute("loginUser");
@@ -58,21 +55,26 @@ public class ProjectUpdateHandler extends HttpServlet {
       project.setEndDate(Date.valueOf(request.getParameter("endDate")));
       project.setOwner(loginUser);
 
-      //...&member=1&member=23&member=17
+      // ...&member=1&member=18&member=23
       String[] values = request.getParameterValues("member");
       ArrayList<Member> memberList = new ArrayList<>();
-      for (String value : values) {
-        Member member = new Member();
-        member.setNo(Integer.parseInt(value));
-        memberList.add(member);
+      if (values != null ) {
+        for (String value : values) {
+          Member member = new Member();
+          member.setNo(Integer.parseInt(value));
+          memberList.add(member);
+        }
       }
       project.setMembers(memberList);
+
+      // DBMS에게 프로젝트 변경을 요청한다.
+      projectService.update(project);
 
       out.println("<meta http-equiv='Refresh' content='1;url=list'>");
       out.println("</head>");
       out.println("<body>");
-      out.println("<h1>게시글 변경</h1>");
-      out.println("<p>게시글을 변경하였습니다.</p>");
+      out.println("<h1>프로젝트 변경</h1>");
+      out.println("<p>프로젝트를 변경하였습니다.</p>");
 
     } catch (Exception e) {
       StringWriter strWriter = new StringWriter();
@@ -89,7 +91,6 @@ public class ProjectUpdateHandler extends HttpServlet {
 
     out.println("</body>");
     out.println("</html>");
-
   }
 }
 

@@ -44,14 +44,16 @@ public class ProjectAddHandler extends HttpServlet {
     out.println("종료일: <input type='date' name='endDate'><br>");
     out.println("팀원: <br>");
     try {
-      List<Member> members = memberService.list();
+      List<Member> members = memberService.list(null);
       for (Member m : members) {
         out.printf("  <input type='checkbox' name='member' value='%d'>%s<br>\n", m.getNo(), m.getName());
       }
     } catch (Exception e) {
       throw new ServletException(e);
     }
-    out.println("<input type='submit' value='등록'>");
+    out.println("<p><input type='submit' value='등록'>");
+    out.println("<a href='list'>목록</a></p>");
+
     out.println("</form>");
     out.println("</body>");
     out.println("</html>");
@@ -63,8 +65,6 @@ public class ProjectAddHandler extends HttpServlet {
 
     ProjectService projectService = (ProjectService) request.getServletContext().getAttribute("projectService");
 
-    // 클라이언트가 POST 요청으로 보낸 데이터가 UTF-8임을 알려준다.
-    request.setCharacterEncoding("UTF-8");
 
     response.setContentType("text/html;charset=UTF-8");
     PrintWriter out = response.getWriter();
@@ -84,13 +84,15 @@ public class ProjectAddHandler extends HttpServlet {
       Member loginUser = (Member) request.getSession().getAttribute("loginUser");
       p.setOwner(loginUser);
 
-      // ...&member=1&member=18&member=23
+      // 같은 멤버 파라미터로 여러명이 들어올 때는 이걸 쓰세요!
       String[] values = request.getParameterValues("member");
       ArrayList<Member> memberList = new ArrayList<>();
-      for (String value : values) {
-        Member member = new Member();
-        member.setNo(Integer.parseInt(value));
-        memberList.add(member);
+      if (values !=null) {
+        for (String value : values) {
+          Member member = new Member();
+          member.setNo(Integer.parseInt(value));
+          memberList.add(member);
+        }
       }
       p.setMembers(memberList);
 
