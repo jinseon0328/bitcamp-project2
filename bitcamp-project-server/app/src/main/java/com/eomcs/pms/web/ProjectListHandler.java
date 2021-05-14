@@ -2,7 +2,6 @@ package com.eomcs.pms.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -92,48 +91,44 @@ public class ProjectListHandler extends HttpServlet {
       out.println("</tbody>");
       out.println("</table>");
 
-      out.println("<form action='list' method='get'>");
+      out.println("<form method='get'>");
       out.println("<select name='item'>");
-      out.printf("  <option value='0' %s>전체</option>\n",
-          (item !=null && item.equals("0")) ? "selected" : "");
+      out.printf("  <option value='0' %s>전체</option>\n", 
+          (item != null && item.equals("0")) ? "selected" : "");
       out.printf("  <option value='1' %s>프로젝트명</option>\n", 
-          (item !=null &&item.equals("1") ? "selected" : ""));
-      out.printf("  <option value='2' %s>관리자</option>\n",
-          (item !=null &&item.equals("2") ? "selected" : ""));
-      out.printf("  <option value='3' %s>팀원</option>\n",
-          (item !=null &&item.equals("3") ? "selected" : ""));
+          (item != null && item.equals("1")) ? "selected" : "");
+      out.printf("  <option value='2' %s>관리자</option>\n", 
+          (item != null && item.equals("2")) ? "selected" : "");
+      out.printf("  <option value='3' %s>팀원</option>\n", 
+          (item != null && item.equals("3")) ? "selected" : "");
       out.println("</select>");
-      out.printf("<input type='search' name='keyword' value='%s'>\n ",
+      out.printf("<input type='search' name='keyword' value='%s'> \n",
           keyword != null ? keyword : "");
       out.println("<button>검색</button>");
       out.println("</form>");
 
       out.println("<form method='get'>");
       out.println("<fieldset>");
-      out.println("<legend>상세 검색</legend>");
-      out.println("<table border='1'>");
-      out.println("<tbody>");
-      out.printf("<tr><th>프로젝트명</th>"
-          + "<td><input type='search' name='title' value='%s'></td></tr>\n", title != null ? title : "");
-      out.printf("<tr><th>관리자</th>"
-          + "<td><input type='search' name='owner' value='%s'></td></tr>\n", owner != null ? owner : "");
-      out.printf("<tr><th>팀원</th>"
-          + "<td><input type='search' name='member' value='%s'></td></tr>\n", member != null ? member : "");
-      out.println("<tr><td colspan='2'><button>검색</button></td></tr>");
-      out.println("</tbody>");
-      out.println("</table>");
+      out.println("  <legend>상세 검색</legend>");
+      out.println("  <table border='1'>");
+      out.println("  <tbody>");
+      out.printf("  <tr> <th>프로젝트명</th>"
+          + " <td><input type='search' name='title' value='%s'></td> </tr>\n", 
+          title != null ? title : "");
+      out.printf("  <tr> <th>관리자</th>"
+          + " <td><input type='search' name='owner' value='%s'></td> </tr>\n", 
+          owner != null ? owner : "");
+      out.printf("  <tr> <th>팀원</th>"
+          + " <td><input type='search' name='member' value='%s'></td> </tr>\n", 
+          member != null ? member : "");
+      out.println("  <tr> <td colspan='2'><button>검색</button></td> </tr>");
+      out.println("  </tbody>");
+      out.println("  </table>");
       out.println("</fieldset>");
       out.println("</form>");
 
-
     } catch (Exception e) {
-      // 상세 오류 내용을 StringWriter로 출력한다.
-      StringWriter strWriter = new StringWriter();
-      PrintWriter printWriter = new PrintWriter(strWriter);
-      e.printStackTrace(printWriter);
-
-      // StringWriter 에 들어 있는 출력 내용을 꺼내 클라이언트로 보낸다.
-      out.printf("<pre>%s</pre>\n", strWriter.toString());
+      throw new ServletException(e);
     }
 
     out.println("</body>");

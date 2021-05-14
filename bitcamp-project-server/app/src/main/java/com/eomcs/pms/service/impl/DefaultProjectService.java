@@ -47,6 +47,7 @@ public class DefaultProjectService implements ProjectService {
 
           projectDao.insertMembers(params);
         }
+
         return count;
       }
     });

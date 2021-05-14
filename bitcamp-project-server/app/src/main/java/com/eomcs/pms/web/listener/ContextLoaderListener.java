@@ -23,15 +23,15 @@ import com.eomcs.pms.service.impl.DefaultMemberService;
 import com.eomcs.pms.service.impl.DefaultProjectService;
 import com.eomcs.pms.service.impl.DefaultTaskService;
 
-// 웹 애플리케이션을 시작하거나 종료할 때 서블릿 컨터이너 톰캣서버로부터 보고를 받는다.
-// 즉 톰캣 서버가 웹 애플리케이션을 시작하면 리스너 규칙에 따라 메서드를 호출한다는 뜻이다.
+// 웹 애플리케이션을 시작하거나 종료할 때 서버로부터 보고를 받는다.
+// 즉 톰캣 서버가 웹 애플리케이션을 시작하거나 종료하면 리스너 규칙에 따라 메서드를 호출한다는 뜻이다.
 // 
-public class ContextLoaderListener implements ServletContextListener{
-
+public class ContextLoaderListener implements ServletContextListener {
   @Override
   public void contextInitialized(ServletContextEvent sce) {
     try {
       ServletContext servletContext = sce.getServletContext();
+
       // 1) Mybatis 관련 객체 준비
       InputStream mybatisConfigStream = Resources.getResourceAsStream(
           servletContext.getInitParameter("mybatis-config"));
@@ -54,13 +54,12 @@ public class ContextLoaderListener implements ServletContextListener{
       TaskService taskService = new DefaultTaskService(taskDao);
 
       // 4) 서비스 객체를 ServletContext 보관소에 저장한다.
-
       servletContext.setAttribute("boardService", boardService);
       servletContext.setAttribute("memberService", memberService);
       servletContext.setAttribute("projectService", projectService);
       servletContext.setAttribute("taskService", taskService);
 
-      System.out.println("ContextLoaderListener: 의존 객체를 모두 준비하였습니다2.");
+      System.out.println("ContextLoaderListener: 의존 객체를 모두 준비하였습니다.");
 
     } catch (Exception e) {
       e.printStackTrace();

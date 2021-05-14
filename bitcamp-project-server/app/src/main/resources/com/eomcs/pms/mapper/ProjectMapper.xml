@@ -92,10 +92,10 @@
 	    <if test="title != null and title != ''">
 	      p.title like concat('%', #{title}, '%')
 	    </if>
-	    <if test="owner != null and owner !=''">
+	    <if test="owner != null and owner != ''">
 	      and m.name like concat('%', #{owner}, '%')
 	    </if>
-	    <if test="member != null and member !=''">
+	    <if test="member != null and member != ''">
 	      and m2.name like concat('%', #{member}, '%')
 	    </if>
     </where>
