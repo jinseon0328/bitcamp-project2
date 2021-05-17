@@ -18,13 +18,18 @@ public class BoardListHandler extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    // 클라이언트가 /board/list 를 요청하면 톰캣 서버가 이 메서드를 호출한다. 
 
     BoardService boardService = (BoardService) request.getServletContext().getAttribute("boardService");
 
+    // JSP가 게시글 목록을 출력할 때 사용할 데이터를 준비한다.  
     try {
-      // JSP가 게시글 목록을 출력할 때 사용할 데이터를 준비한다. 
-      List<Board> boards = boardService.list();
+      String keyword = request.getParameter("keyword");
+      List<Board> boards = null;
+      if (keyword != null && keyword.length() > 0) {
+        boards = boardService.search(keyword);
+      } else {
+        boards = boardService.list();
+      }
 
       // JSP가 사용할 수 있도록 ServletRequest 보관소에 저장한다.
       request.setAttribute("list", boards);
@@ -36,7 +41,6 @@ public class BoardListHandler extends HttpServlet {
     } catch (Exception e) {
       throw new ServletException(e);
     }
-
   }
 }
 

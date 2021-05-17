@@ -18,7 +18,7 @@ import com.eomcs.pms.service.ProjectService;
 public class ProjectAddHandler extends HttpServlet {
 
   @Override
-  protected void service(HttpServletRequest request, HttpServletResponse response)
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     ProjectService projectService = (ProjectService) request.getServletContext().getAttribute("projectService");
@@ -27,19 +27,19 @@ public class ProjectAddHandler extends HttpServlet {
 
     try {
       Project p = new Project();
-      // 프로젝트 등록 1단계에서 입력한 내용이 세션에 보관되어 있다.
-      p.setTitle((String)session.getAttribute("title"));
+      // 프로젝트 등록 1단계에서 입력한 내용이 세션에 보관되어 있다. 
+      p.setTitle((String) session.getAttribute("title"));
 
       // 프로젝트 등록 2단계에서 입력한 내용이 세션에 보관되어 있다.
-      p.setContent((String)session.getAttribute("content"));
-      p.setStartDate(Date.valueOf((String)session.getAttribute("startDate")));
-      p.setEndDate(Date.valueOf((String)session.getAttribute("endDate")));
+      p.setContent((String) session.getAttribute("content"));
+      p.setStartDate(Date.valueOf((String) session.getAttribute("startDate")));
+      p.setEndDate(Date.valueOf((String) session.getAttribute("endDate")));
 
-      //사용자 로그인 정보는 세션에 보관되어 있다.
-      Member loginUser = (Member) request.getSession().getAttribute("loginUser");
+      // 사용자 로그인 정보는 세션에 보관되어 있다.
+      Member loginUser = (Member) session.getAttribute("loginUser");
       p.setOwner(loginUser);
 
-      // 프로젝트 팀원 정보는 여기에 보관되어 있다.
+      // 프로젝트 팀원 정보는 파라미터에 있다.
       // ...&member=1&member=18&member=23
       String[] values = request.getParameterValues("member");
       ArrayList<Member> memberList = new ArrayList<>();
@@ -61,7 +61,6 @@ public class ProjectAddHandler extends HttpServlet {
     }
   }
 }
-
 
 
 

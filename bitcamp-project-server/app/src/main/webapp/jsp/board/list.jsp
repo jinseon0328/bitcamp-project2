@@ -3,16 +3,16 @@
 <%@ page 
     language="java" 
     contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-
+    pageEncoding="UTF-8"
+    trimDirectiveWhitespaces="true"%>
 <!DOCTYPE html>
 <html>
 <head>
 <title>게시글 목록</title>
 </head>
 <body>
-<h1>게시글 목록(JSP2)</h1>
-<p><a href='form.html'>새 글</a></p>
+<h1>게시글 목록(JSP + JSP 액션태그 + EL)</h1>
+<p><a href='add'>새 글</a></p>
 <table border='1'>
 <thead>
 <tr>
@@ -20,25 +20,28 @@
 </tr>
 </thead>
 <tbody>
-<% // scriptl
-List<Board> list = (List<Board>) request.getAttribute("list");
+<jsp:useBean id="list" type="List<Board>" scope="request"/>
+<% 
 for (Board b : list) {
-  out.println("<tr>"); 
-  out.println("<td>" + b.getNo() + "</td>"); 
-  out.println("<td><a href='detail?no=" + b.getNo() + "'>" + b.getTitle() + "</a></td>"); 
-  out.println("<td>" + b.getWriter().getName() + "</td>"); 
-  out.println("<td>" + b.getRegisteredDate() + "</td>"); 
-  out.println("<td>" + b.getViewCount() + "</td>"); 
-  out.println("</tr>");  
+  pageContext.setAttribute("b", b);
+%>
+<tr> 
+  <td>${b.no}</td> 
+  <td><a href='detail?no=${b.no}'>${b.title}</a></td>
+  <td>${b.writer.name}</td>
+  <td>${b.registeredDate}</td>
+  <td>${b.viewCount}</td>
+</tr>
+<%
 }
 %>
 </tbody>
 </table>
-<form action='search' method='get'>
-<input type='text' name='keyword'> 
+
+<form action='list' method='get'>
+<input type='search' name='keyword' value='${param.keyword}'> 
 <button>검색</button>
 </form>
+
 </body>
 </html>
-
-    
