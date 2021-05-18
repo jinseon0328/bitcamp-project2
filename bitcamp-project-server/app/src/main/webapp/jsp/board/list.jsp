@@ -1,10 +1,9 @@
-<%@page import="com.eomcs.pms.domain.Board"%>
-<%@page import="java.util.List"%>
 <%@ page 
     language="java" 
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     trimDirectiveWhitespaces="true"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,11 +19,8 @@
 </tr>
 </thead>
 <tbody>
-<jsp:useBean id="list" type="List<Board>" scope="request"/>
-<% 
-for (Board b : list) {
-  pageContext.setAttribute("b", b);
-%>
+<c:forEach items="${list}" var="b"/>
+
 <tr> 
   <td>${b.no}</td> 
   <td><a href='detail?no=${b.no}'>${b.title}</a></td>
@@ -32,9 +28,7 @@ for (Board b : list) {
   <td>${b.registeredDate}</td>
   <td>${b.viewCount}</td>
 </tr>
-<%
-}
-%>
+
 </tbody>
 </table>
 
